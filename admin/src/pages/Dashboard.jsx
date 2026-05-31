@@ -24,6 +24,7 @@ export default function Dashboard({ token, onLogout }) {
   const [editModal, setEditModal]   = useState(null)       // score obj to edit
   const [deleteModal, setDeleteModal] = useState(null)     // id to delete
   const [bulkModal, setBulkModal]   = useState(false)
+  const [viewImage, setViewImage]   = useState(null)
 
   // Poster state
   const [poster, setPoster]         = useState(null)
@@ -246,7 +247,15 @@ export default function Dashboard({ token, onLogout }) {
                         <td>
                           <div className="tbl-avatar-wrap">
                             {s.imageUrl
-                              ? <img src={s.imageUrl} alt={s.name} className="tbl-avatar" />
+                              ? <img
+                                  src={s.imageUrl}
+                                  alt={s.name}
+                                  className="tbl-avatar clickable-avatar"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    setViewImage({ url: s.imageUrl, name: s.name });
+                                  }}
+                                />
                               : <div className="tbl-avatar-placeholder">{s.name.charAt(0).toUpperCase()}</div>
                             }
                             <span className="tbl-name">{s.name}</span>
@@ -377,6 +386,21 @@ export default function Dashboard({ token, onLogout }) {
             <div className="modal-actions">
               <button className="btn btn-ghost" onClick={() => setBulkModal(false)}>Hủy</button>
               <button className="btn btn-danger" onClick={handleBulkDelete}>🗑️ Xóa tất cả</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ── Image Viewer Modal ── */}
+      {viewImage && (
+        <div className="modal-overlay image-viewer-overlay" onClick={() => setViewImage(null)}>
+          <div className="image-viewer-content" onClick={e => e.stopPropagation()}>
+            <div className="image-viewer-header">
+              <h3>📸 Ảnh của {viewImage.name}</h3>
+              <button className="modal-close" onClick={() => setViewImage(null)}>✕</button>
+            </div>
+            <div className="image-viewer-body">
+              <img src={viewImage.url} alt={viewImage.name} className="viewer-img" />
             </div>
           </div>
         </div>

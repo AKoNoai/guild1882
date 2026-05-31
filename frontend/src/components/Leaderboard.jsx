@@ -1,4 +1,8 @@
+import { useState } from 'react'
+
 export default function Leaderboard({ scores, loading, poster, onOpenPoster }) {
+  const [viewImage, setViewImage] = useState(null)
+
   const rankIcon = (i) => {
     if (i === 0) return '🥇'
     if (i === 1) return '🥈'
@@ -51,7 +55,15 @@ export default function Leaderboard({ scores, loading, poster, onOpenPoster }) {
                   <td>
                     <div className="user-cell">
                       {s.imageUrl
-                        ? <img src={s.imageUrl} alt={s.name} className="avatar" />
+                        ? <img
+                            src={s.imageUrl}
+                            alt={s.name}
+                            className="avatar clickable-avatar"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setViewImage({ url: s.imageUrl, name: s.name });
+                            }}
+                          />
                         : <div className="avatar-placeholder">{s.name.charAt(0).toUpperCase()}</div>
                       }
                       <span className="user-name">{s.name}</span>
@@ -89,6 +101,20 @@ export default function Leaderboard({ scores, loading, poster, onOpenPoster }) {
               </div>
             </div>
           ))}
+        </div>
+      )}
+
+      {viewImage && (
+        <div className="modal-overlay image-viewer-overlay" onClick={() => setViewImage(null)}>
+          <div className="image-viewer-content" onClick={e => e.stopPropagation()}>
+            <div className="image-viewer-header">
+              <h3>📸 Ảnh của {viewImage.name}</h3>
+              <button className="modal-close" onClick={() => setViewImage(null)}>✕</button>
+            </div>
+            <div className="image-viewer-body">
+              <img src={viewImage.url} alt={viewImage.name} className="viewer-img" />
+            </div>
+          </div>
         </div>
       )}
     </section>
