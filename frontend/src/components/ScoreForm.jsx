@@ -66,7 +66,7 @@ export default function ScoreForm({ onSuccess }) {
         <form onSubmit={handleSubmit}>
           {/* Avatar Upload */}
           <div className="form-group">
-            <label>Ảnh đại diện (tùy chọn)</label>
+            <label>Ảnh Điểm Guild Chiến (tùy chọn)</label>
             <label className="file-upload-label" htmlFor="avatar-input">
               {preview
                 ? <img src={preview} alt="Preview" className="preview-img" />

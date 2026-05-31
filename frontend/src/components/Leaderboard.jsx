@@ -22,7 +22,7 @@ export default function Leaderboard({ scores, loading, poster, onOpenPoster }) {
         <h2>🏆 Bảng Xếp Hạng</h2>
         {poster && (
           <button className="poster-btn" onClick={onOpenPoster}>
-            🎨 Xem Poster
+            🎁 Xem Quà Guild
           </button>
         )}
       </div>

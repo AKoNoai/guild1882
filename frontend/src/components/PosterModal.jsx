@@ -5,7 +5,7 @@ export default function PosterModal({ open, poster, onClose }) {
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal-content" onClick={e => e.stopPropagation()}>
         <div className="modal-header">
-          <h3>🎨 Poster Sự Kiện</h3>
+          <h3>🎁 Quà Guild</h3>
           <button className="modal-close" onClick={onClose}>✕</button>
         </div>
         {poster?.imageUrl
