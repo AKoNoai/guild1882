@@ -13,6 +13,7 @@ app.use(cors({
     'http://localhost:5173',
     'http://localhost:5174',
     'https://guild1882-admin.vercel.app',
+    'https://guild1882-frt.vercel.app',
     'https://guild1882.vercel.app',
     process.env.FRONTEND_URL || '',
     process.env.ADMIN_URL || ''
