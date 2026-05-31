@@ -5,7 +5,17 @@ import Leaderboard from './components/Leaderboard'
 import PosterModal from './components/PosterModal'
 import axios from 'axios'
 
-const API = import.meta.env.VITE_API_URL || ''
+const getApiUrl = () => {
+  const envUrl = import.meta.env.VITE_API_URL;
+  if (import.meta.env.PROD) {
+    if (!envUrl || envUrl.includes('localhost') || envUrl.includes('127.0.0.1')) {
+      return 'https://guild1882-backend.vercel.app';
+    }
+    return envUrl;
+  }
+  return envUrl || 'http://localhost:5000';
+}
+const API = getApiUrl();
 
 export default function App() {
   const [tab, setTab] = useState('leaderboard')

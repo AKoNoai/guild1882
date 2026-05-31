@@ -2,7 +2,17 @@ import { useState } from 'react'
 import axios from 'axios'
 import toast from 'react-hot-toast'
 
-const API = import.meta.env.VITE_API_URL || ''
+const getApiUrl = () => {
+  const envUrl = import.meta.env.VITE_API_URL;
+  if (import.meta.env.PROD) {
+    if (!envUrl || envUrl.includes('localhost') || envUrl.includes('127.0.0.1')) {
+      return 'https://guild1882-backend.vercel.app';
+    }
+    return envUrl;
+  }
+  return envUrl || 'http://localhost:5000';
+}
+const API = getApiUrl();
 
 export default function Login({ onLogin }) {
   const [username, setUsername] = useState('')
