@@ -84,7 +84,10 @@ export default function Dashboard({ token, onLogout }) {
       toast.success('✅ Đã cập nhật!')
       setEditModal(null)
       fetchScores()
-    } catch (err) { toast.error(err.response?.data?.message || 'Lỗi cập nhật') }
+    } catch (err) {
+      if (err.response?.status === 401) return onLogout();
+      toast.error(err.response?.data?.message || 'Lỗi cập nhật')
+    }
   }
 
   /* ── Delete 1 ── */
@@ -94,7 +97,10 @@ export default function Dashboard({ token, onLogout }) {
       toast.success('🗑️ Đã xóa!')
       setDeleteModal(null)
       fetchScores()
-    } catch { toast.error('Lỗi xóa') }
+    } catch (err) {
+      if (err.response?.status === 401) return onLogout();
+      toast.error('Lỗi xóa')
+    }
   }
 
   /* ── Bulk delete ── */
@@ -105,7 +111,10 @@ export default function Dashboard({ token, onLogout }) {
       setBulkModal(false)
       setSelected([])
       fetchScores()
-    } catch { toast.error('Lỗi xóa hàng loạt') }
+    } catch (err) {
+      if (err.response?.status === 401) return onLogout();
+      toast.error('Lỗi xóa hàng loạt')
+    }
   }
 
   /* ── Upload poster ── */
@@ -123,14 +132,19 @@ export default function Dashboard({ token, onLogout }) {
     fd.append('image', posterFile)
     try {
       setPosterLoading(true)
-      await axios.post(`${API}/api/poster`, fd, {
-        headers: { ...authHeaders.headers, 'Content-Type': 'multipart/form-data' }
-      })
+      await axios.post(`${API}/api/poster`, fd, authHeaders)
       toast.success('🎨 Đã cập nhật poster!')
       setPosterFile(null)
       setPosterPreview(null)
       fetchPoster()
-    } catch { toast.error('Lỗi upload poster') }
+    } catch (err) {
+      if (err.response?.status === 401) {
+        toast.error('Phiên đăng nhập hết hạn, vui lòng tải lại trang hoặc đăng nhập lại');
+        onLogout();
+      } else {
+        toast.error('Lỗi upload poster');
+      }
+    }
     finally { setPosterLoading(false) }
   }
 
