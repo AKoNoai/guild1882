@@ -7,6 +7,14 @@ dotenv.config();
 
 const app = express();
 
+const dns = require('dns');
+try {
+  // Avoid invalid default that can crash in some hosting environments
+  dns.setServers(['8.8.8.8']);
+} catch (e) {
+  console.warn('⚠️ DNS setServers ignored:', e && e.message);
+}
+
 // Middleware
 app.use(cors({
   origin: [
