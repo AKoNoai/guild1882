@@ -55,4 +55,24 @@ router.post('/', auth, upload.single('image'), async (req, res) => {
   }
 });
 
+// DELETE /api/poster — admin only
+router.delete('/', auth, async (req, res) => {
+  try {
+    const poster = await Poster.findOne().sort({ createdAt: -1 });
+    if (!poster) {
+      return res.status(404).json({ message: 'No poster found' });
+    }
+    
+    // Delete from Cloudinary
+    if (poster.imagePublicId) {
+      await cloudinary.uploader.destroy(poster.imagePublicId).catch(() => {});
+    }
+    
+    await Poster.deleteMany({});
+    res.json({ message: 'Poster deleted successfully' });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
 module.exports = router;

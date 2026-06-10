@@ -175,6 +175,22 @@ export default function Dashboard({ token, onLogout }) {
     finally { setPosterLoading(false) }
   }
 
+  const handleDeletePoster = async () => {
+    if (!window.confirm('Bạn có chắc muốn xóa poster hiện tại?')) return;
+    try {
+      setPosterLoading(true)
+      await axios.delete(`${API}/api/poster`, authHeaders)
+      toast.success('🗑️ Đã xóa poster!')
+      setPoster(null)
+    } catch (err) {
+      if (err.response?.status === 401) return onLogout();
+      toast.error('Lỗi khi xóa poster');
+    } finally {
+      setPosterLoading(false)
+    }
+  }
+
+
   const totalScore = scores.reduce((a, s) => a + s.score, 0)
   const topScore = scores.length ? scores[0].score : 0
 
@@ -375,6 +391,12 @@ export default function Dashboard({ token, onLogout }) {
                     <p>Ngày upload: {new Date(poster.createdAt).toLocaleString('vi-VN')}</p>
                   )}
                   <p>Poster sẽ hiển thị khi user nhấn "Xem Poster" trên bảng xếp hạng.</p>
+                  {poster && (
+                    <div className="poster-actions" style={{ display: 'flex', gap: '10px', marginTop: '16px' }}>
+                      <button className="btn btn-ghost btn-sm" onClick={() => document.getElementById('poster-file').click()}>✏️ Sửa</button>
+                      <button className="btn btn-danger btn-sm" onClick={handleDeletePoster}>🗑️ Xóa</button>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
