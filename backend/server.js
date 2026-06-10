@@ -15,6 +15,31 @@ try {
   console.warn('⚠️ DNS setServers ignored:', e && e.message);
 }
 
+// ── Cached MongoDB connection for Vercel serverless ──
+let isConnected = false;
+
+const connectDB = async () => {
+  if (isConnected) return;
+  if (mongoose.connection.readyState === 1) {
+    isConnected = true;
+    return;
+  }
+
+  try {
+    await mongoose.connect(process.env.MONGODB_URI, {
+      serverSelectionTimeoutMS: 15000,
+      socketTimeoutMS: 45000,
+      bufferCommands: true,
+    });
+    isConnected = true;
+    console.log('✅ MongoDB connected');
+  } catch (err) {
+    console.error('❌ MongoDB error:', err);
+    isConnected = false;
+    throw err;
+  }
+};
+
 // Middleware
 app.use(cors({
   origin: [
@@ -31,6 +56,16 @@ app.use(cors({
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// Ensure DB is connected before handling API requests
+app.use('/api', async (req, res, next) => {
+  try {
+    await connectDB();
+    next();
+  } catch (err) {
+    res.status(503).json({ message: 'Database connection failed', error: err.message });
+  }
+});
+
 // Routes
 app.use('/api/scores', require('./routes/scores'));
 app.use('/api/poster', require('./routes/poster'));
@@ -43,10 +78,8 @@ app.get('/', (req, res) => {
   res.json({ message: 'Guild1882 API is running 🚀', status: 'ok' });
 });
 
-// MongoDB connection
-mongoose.connect(process.env.MONGODB_URI)
-  .then(() => console.log('✅ MongoDB connected'))
-  .catch(err => console.error('❌ MongoDB error:', err));
+// Initial connection (for local dev, non-serverless)
+connectDB().catch(() => {});
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
