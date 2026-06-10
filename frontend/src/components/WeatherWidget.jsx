@@ -1,7 +1,17 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import axios from 'axios';
 
-const BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+const getApiUrl = () => {
+  const envUrl = import.meta.env.VITE_API_URL;
+  if (import.meta.env.PROD) {
+    if (!envUrl || envUrl.includes('localhost') || envUrl.includes('127.0.0.1')) {
+      return 'https://guild1882-backend.vercel.app';
+    }
+    return envUrl;
+  }
+  return envUrl || 'http://localhost:5000';
+};
+const BASE_URL = getApiUrl();
 
 const MONTHS = [1,2,3,4,5,6,7,8,9,10,11,12];
 
