@@ -21,6 +21,7 @@ const API = getApiUrl();
 
 export default function App() {
   const [tab, setTab] = useState('leaderboard')
+  const [menuOpen, setMenuOpen] = useState(false)
   const [scores, setScores] = useState([])
   const [loading, setLoading] = useState(true)
   const [posterOpen, setPosterOpen] = useState(false)
@@ -75,7 +76,44 @@ export default function App() {
         style: { background: '#1e1e3a', color: '#e2e8f0', border: '1px solid rgba(99,102,241,0.3)' }
       }} />
 
-      <header className="header">
+      <div className="container" style={{ paddingTop: '20px' }}>
+        <div className="tabs-container">
+          <button 
+            className="mobile-menu-btn" 
+            onClick={() => setMenuOpen(!menuOpen)}
+          >
+            {menuOpen ? '✖ Đóng Menu' : '☰ Menu Điều Hướng'}
+          </button>
+          <div className={`tabs ${menuOpen ? 'open' : ''}`}>
+            <button
+              className={`tab-btn ${tab === 'leaderboard' ? 'active' : ''}`}
+              onClick={() => { setTab('leaderboard'); setMenuOpen(false); }}
+            >
+              🏆 Bảng Xếp Hạng
+            </button>
+            <button
+              className={`tab-btn ${tab === 'submit' ? 'active' : ''}`}
+              onClick={() => { setTab('submit'); setMenuOpen(false); }}
+            >
+              📤 Gửi Điểm
+            </button>
+            <button
+              className={`tab-btn ${tab === 'weather' ? 'active' : ''}`}
+              onClick={() => { setTab('weather'); setMenuOpen(false); }}
+            >
+              🌤️ Thời Tiết
+            </button>
+            <button
+              className={`tab-btn ${tab === 'profile' ? 'active' : ''}`}
+              onClick={() => { setTab('profile'); setMenuOpen(false); }}
+            >
+              📋 Profile
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <header className="header" style={{ borderTop: 'none', marginTop: '10px' }}>
         <div className="container">
           <div className="header-badge">⚔️ Guild 1882</div>
           <h1>Bảng Xếp Hạng</h1>
@@ -84,32 +122,7 @@ export default function App() {
       </header>
 
       <div className="container">
-        <div className="tabs">
-          <button
-            className={`tab-btn ${tab === 'leaderboard' ? 'active' : ''}`}
-            onClick={() => setTab('leaderboard')}
-          >
-            🏆 Bảng Xếp Hạng
-          </button>
-          <button
-            className={`tab-btn ${tab === 'submit' ? 'active' : ''}`}
-            onClick={() => setTab('submit')}
-          >
-            📤 Gửi Điểm
-          </button>
-          <button
-            className={`tab-btn ${tab === 'weather' ? 'active' : ''}`}
-            onClick={() => setTab('weather')}
-          >
-            🌤️ Thời Tiết
-          </button>
-          <button
-            className={`tab-btn ${tab === 'profile' ? 'active' : ''}`}
-            onClick={() => setTab('profile')}
-          >
-            📋 Profile
-          </button>
-        </div>
+
 
         {tab === 'leaderboard' && (
           <Leaderboard
