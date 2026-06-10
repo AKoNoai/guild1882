@@ -575,3 +575,62 @@ body {
 .viewer-img:hover {
   transform: scale(1.02);
 }
+
+/* ─── Submission Toggle Card ─── */
+.submission-toggle-card {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 16px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  font-size: 13px;
+  backdrop-filter: blur(8px);
+  transition: all 0.2s ease;
+}
+.submission-toggle-card:hover {
+  border-color: rgba(99,102,241,0.25);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+.submission-toggle-card .status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  display: inline-block;
+  position: relative;
+}
+.submission-toggle-card .status-dot.open {
+  background-color: var(--green);
+  box-shadow: 0 0 10px var(--green);
+  animation: pulse-green 1.5s infinite;
+}
+.submission-toggle-card .status-dot.closed {
+  background-color: var(--red);
+  box-shadow: 0 0 10px var(--red);
+  animation: pulse-red-dot 1.5s infinite;
+}
+@keyframes pulse-green {
+  0% { transform: scale(0.9); box-shadow: 0 0 4px var(--green); }
+  50% { transform: scale(1.1); box-shadow: 0 0 12px var(--green); }
+  100% { transform: scale(0.9); box-shadow: 0 0 4px var(--green); }
+}
+@keyframes pulse-red-dot {
+  0% { transform: scale(0.9); box-shadow: 0 0 4px var(--red); }
+  50% { transform: scale(1.1); box-shadow: 0 0 12px var(--red); }
+  100% { transform: scale(0.9); box-shadow: 0 0 4px var(--red); }
+}
+.submission-toggle-card .status-label {
+  color: var(--text);
+  font-weight: 500;
+}
+.submission-toggle-card .status-label strong.text-green {
+  color: var(--green);
+}
+.submission-toggle-card .status-label strong.text-red {
+  color: var(--red);
+}
+.submission-toggle-card button {
+  font-weight: 600;
+  transition: all 0.2s ease;
+}

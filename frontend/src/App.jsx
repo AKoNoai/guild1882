@@ -23,6 +23,16 @@ export default function App() {
   const [loading, setLoading] = useState(true)
   const [posterOpen, setPosterOpen] = useState(false)
   const [poster, setPoster] = useState(null)
+  const [submissionsOpen, setSubmissionsOpen] = useState(true)
+
+  const fetchSubmissionsStatus = async () => {
+    try {
+      const { data } = await axios.get(`${API}/api/scores/status`)
+      setSubmissionsOpen(data.open)
+    } catch (e) {
+      console.error(e)
+    }
+  }
 
   const fetchScores = async () => {
     try {
@@ -48,7 +58,14 @@ export default function App() {
   useEffect(() => {
     fetchScores()
     fetchPoster()
+    fetchSubmissionsStatus()
   }, [])
+
+  useEffect(() => {
+    if (tab === 'submit') {
+      fetchSubmissionsStatus()
+    }
+  }, [tab])
 
   return (
     <div className="app">
@@ -91,6 +108,7 @@ export default function App() {
 
         {tab === 'submit' && (
           <ScoreForm
+            submissionsOpen={submissionsOpen}
             onSuccess={() => {
               fetchScores()
               setTab('leaderboard')

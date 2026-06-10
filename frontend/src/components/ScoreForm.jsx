@@ -14,7 +14,7 @@ const getApiUrl = () => {
 }
 const API = getApiUrl();
 
-export default function ScoreForm({ onSuccess }) {
+export default function ScoreForm({ onSuccess, submissionsOpen }) {
   const [name, setName]       = useState('')
   const [score, setScore]     = useState('')
   const [image, setImage]     = useState(null)
@@ -55,6 +55,18 @@ export default function ScoreForm({ onSuccess }) {
     } finally {
       setLoading(false)
     }
+  }
+
+  if (submissionsOpen === false) {
+    return (
+      <section className="form-section">
+        <div className="card closed-card">
+          <div className="closed-icon-wrap">🔒</div>
+          <h2>Cổng Gửi Điểm Đã Đóng</h2>
+          <p>Hiện tại ban quản trị đã đóng chức năng gửi điểm. Hẹn gặp lại bạn ở sự kiện tiếp theo hoặc vui lòng liên hệ Admin!</p>
+        </div>
+      </section>
+    )
   }
 
   return (

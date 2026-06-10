@@ -497,3 +497,47 @@ body {
 .viewer-img:hover {
   transform: scale(1.02);
 }
+
+/* ─── Closed State ─── */
+.closed-card {
+  text-align: center;
+  padding: 48px 24px;
+  max-width: 520px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+.closed-icon-wrap {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: rgba(239, 68, 68, 0.1);
+  border: 2px solid rgba(239, 68, 68, 0.3);
+  color: var(--color-red);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 36px;
+  margin-bottom: 8px;
+  box-shadow: 0 0 20px rgba(239, 68, 68, 0.2);
+  animation: pulse-red 2s infinite alternate;
+}
+@keyframes pulse-red {
+  0% { transform: scale(1); box-shadow: 0 0 10px rgba(239, 68, 68, 0.2); }
+  100% { transform: scale(1.05); box-shadow: 0 0 25px rgba(239, 68, 68, 0.4); }
+}
+.closed-card h2 {
+  font-size: 22px;
+  font-weight: 800;
+  background: linear-gradient(135deg, #fff 0%, var(--color-red) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.closed-card p {
+  color: var(--color-muted);
+  font-size: 14px;
+  line-height: 1.6;
+}

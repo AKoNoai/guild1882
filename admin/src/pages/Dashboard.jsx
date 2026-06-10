@@ -25,6 +25,7 @@ export default function Dashboard({ token, onLogout }) {
   const [deleteModal, setDeleteModal] = useState(null)     // id to delete
   const [bulkModal, setBulkModal]   = useState(false)
   const [viewImage, setViewImage]   = useState(null)
+  const [submissionsOpen, setSubmissionsOpen] = useState(true)
 
   // Poster state
   const [poster, setPoster]         = useState(null)
@@ -53,7 +54,32 @@ export default function Dashboard({ token, onLogout }) {
     } catch {}
   }, [])
 
-  useEffect(() => { fetchScores(); fetchPoster() }, [fetchScores, fetchPoster])
+  /* ── Fetch submissions status ── */
+  const fetchSubmissionsStatus = useCallback(async () => {
+    try {
+      const { data } = await axios.get(`${API}/api/scores/status`)
+      setSubmissionsOpen(data.open)
+    } catch {}
+  }, [])
+
+  useEffect(() => { fetchScores(); fetchPoster(); fetchSubmissionsStatus() }, [fetchScores, fetchPoster, fetchSubmissionsStatus])
+
+  /* ── Toggle Submissions ── */
+  const toggleSubmissions = async () => {
+    try {
+      const nextState = !submissionsOpen
+      const { data } = await axios.put(
+        `${API}/api/admin/submissions-status`,
+        { open: nextState },
+        authHeaders
+      )
+      setSubmissionsOpen(data.open)
+      toast.success(data.open ? '🔓 Đã mở cổng gửi điểm!' : '🔒 Đã đóng cổng gửi điểm!')
+    } catch (err) {
+      if (err.response?.status === 401) return onLogout();
+      toast.error('Lỗi khi thay đổi trạng thái cổng gửi điểm')
+    }
+  }
 
   /* ── Search filter ── */
   useEffect(() => {
@@ -185,6 +211,20 @@ export default function Dashboard({ token, onLogout }) {
               <div>
                 <h1>🏆 Quản lý Điểm</h1>
                 <p>Xem, sửa, xóa và lọc dữ liệu người chơi</p>
+              </div>
+
+              {/* Submission Toggle Widget */}
+              <div className="submission-toggle-card">
+                <span className={`status-dot ${submissionsOpen ? 'open' : 'closed'}`} />
+                <span className="status-label">
+                  Cổng gửi điểm: <strong className={submissionsOpen ? 'text-green' : 'text-red'}>{submissionsOpen ? 'ĐANG MỞ' : 'ĐANG ĐÓNG'}</strong>
+                </span>
+                <button
+                  className={`btn btn-sm ${submissionsOpen ? 'btn-danger' : 'btn-primary'}`}
+                  onClick={toggleSubmissions}
+                >
+                  {submissionsOpen ? '🔒 Đóng' : '🔓 Mở'}
+                </button>
               </div>
             </div>
 

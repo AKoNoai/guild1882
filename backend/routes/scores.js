@@ -4,6 +4,7 @@ const multer = require('multer');
 const streamifier = require('streamifier');
 const cloudinary = require('../config/cloudinary');
 const Score = require('../models/Score');
+const Setting = require('../models/Setting');
 const auth = require('../middleware/auth');
 
 // Multer memory storage (for Cloudinary upload via stream)
@@ -33,9 +34,26 @@ router.get('/', async (req, res) => {
   }
 });
 
+// GET /api/scores/status — public, checks if submissions are open
+router.get('/status', async (req, res) => {
+  try {
+    const setting = await Setting.findOne({ key: 'submissions_open' });
+    const open = setting ? !!setting.value : true;
+    res.json({ open });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
 // POST /api/scores — public, submit score with image
 router.post('/', upload.single('image'), async (req, res) => {
   try {
+    const setting = await Setting.findOne({ key: 'submissions_open' });
+    const open = setting ? !!setting.value : true;
+    if (!open) {
+      return res.status(400).json({ message: 'Cổng gửi điểm hiện đang đóng!' });
+    }
+
     const { name, score } = req.body;
     if (!name || score === undefined) {
       return res.status(400).json({ message: 'Name and score are required' });
