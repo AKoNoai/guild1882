@@ -15,20 +15,21 @@ const getApiUrl = () => {
 const API = getApiUrl();
 
 export default function Dashboard({ token, onLogout }) {
-  const [page, setPage]             = useState('scores')   // 'scores' | 'poster'
-  const [scores, setScores]         = useState([])
-  const [filtered, setFiltered]     = useState([])
-  const [search, setSearch]         = useState('')
-  const [loading, setLoading]       = useState(true)
-  const [selected, setSelected]     = useState([])         // selected IDs
-  const [editModal, setEditModal]   = useState(null)       // score obj to edit
+  const [page, setPage] = useState('scores')   // 'scores' | 'poster'
+  const [scores, setScores] = useState([])
+  const [filtered, setFiltered] = useState([])
+  const [search, setSearch] = useState('')
+  const [loading, setLoading] = useState(true)
+  const [selected, setSelected] = useState([])         // selected IDs
+  const [editModal, setEditModal] = useState(null)       // score obj to edit
   const [deleteModal, setDeleteModal] = useState(null)     // id to delete
-  const [bulkModal, setBulkModal]   = useState(false)
-  const [viewImage, setViewImage]   = useState(null)
+  const [bulkModal, setBulkModal] = useState(false)
+  const [viewImage, setViewImage] = useState(null)
   const [submissionsOpen, setSubmissionsOpen] = useState(true)
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
 
   // Poster state
-  const [poster, setPoster]         = useState(null)
+  const [poster, setPoster] = useState(null)
   const [posterFile, setPosterFile] = useState(null)
   const [posterPreview, setPosterPreview] = useState(null)
   const [posterLoading, setPosterLoading] = useState(false)
@@ -51,7 +52,7 @@ export default function Dashboard({ token, onLogout }) {
     try {
       const { data } = await axios.get(`${API}/api/poster`)
       setPoster(data)
-    } catch {}
+    } catch { }
   }, [])
 
   /* ── Fetch submissions status ── */
@@ -59,7 +60,7 @@ export default function Dashboard({ token, onLogout }) {
     try {
       const { data } = await axios.get(`${API}/api/scores/status`)
       setSubmissionsOpen(data.open)
-    } catch {}
+    } catch { }
   }, [])
 
   useEffect(() => { fetchScores(); fetchPoster(); fetchSubmissionsStatus() }, [fetchScores, fetchPoster, fetchSubmissionsStatus])
@@ -90,11 +91,11 @@ export default function Dashboard({ token, onLogout }) {
 
   /* ── Select All ── */
   const allSelected = filtered.length > 0 && selected.length === filtered.length
-  const toggleAll   = () => setSelected(allSelected ? [] : filtered.map(s => s._id))
-  const toggleOne   = (id) => setSelected(p => p.includes(id) ? p.filter(i => i !== id) : [...p, id])
+  const toggleAll = () => setSelected(allSelected ? [] : filtered.map(s => s._id))
+  const toggleOne = (id) => setSelected(p => p.includes(id) ? p.filter(i => i !== id) : [...p, id])
 
   /* ── Edit ── */
-  const [editName, setEditName]   = useState('')
+  const [editName, setEditName] = useState('')
   const [editScore, setEditScore] = useState('')
 
   const openEdit = (s) => {
@@ -175,12 +176,28 @@ export default function Dashboard({ token, onLogout }) {
   }
 
   const totalScore = scores.reduce((a, s) => a + s.score, 0)
-  const topScore   = scores.length ? scores[0].score : 0
+  const topScore = scores.length ? scores[0].score : 0
 
   return (
     <div className="admin-layout">
+      {/* ── Mobile Header ── */}
+      <div className="mobile-header">
+        <div className="mobile-brand">
+          <span className="brand-icon">⚔️</span>
+          <h2>Gửi điểm guild</h2>
+        </div>
+        <button className="hamburger-btn" onClick={() => setIsMobileMenuOpen(true)}>
+          ☰
+        </button>
+      </div>
+
+      {/* ── Sidebar Overlay for Mobile ── */}
+      {isMobileMenuOpen && (
+        <div className="sidebar-overlay" onClick={() => setIsMobileMenuOpen(false)} />
+      )}
+
       {/* ── Sidebar ── */}
-      <aside className="sidebar">
+      <aside className={`sidebar ${isMobileMenuOpen ? 'open' : ''}`}>
         <div className="sidebar-brand">
           <span className="brand-icon">⚔️</span>
           <h2>Guild1882</h2>
@@ -188,10 +205,10 @@ export default function Dashboard({ token, onLogout }) {
         </div>
 
         <nav className="sidebar-nav">
-          <button className={`nav-item ${page === 'scores' ? 'active' : ''}`} onClick={() => setPage('scores')}>
+          <button className={`nav-item ${page === 'scores' ? 'active' : ''}`} onClick={() => { setPage('scores'); setIsMobileMenuOpen(false); }}>
             <span className="nav-icon">🏆</span> Quản lý Điểm
           </button>
-          <button className={`nav-item ${page === 'poster' ? 'active' : ''}`} onClick={() => setPage('poster')}>
+          <button className={`nav-item ${page === 'poster' ? 'active' : ''}`} onClick={() => { setPage('poster'); setIsMobileMenuOpen(false); }}>
             <span className="nav-icon">🎨</span> Quản lý Poster
           </button>
         </nav>
@@ -302,14 +319,14 @@ export default function Dashboard({ token, onLogout }) {
                           <div className="tbl-avatar-wrap">
                             {s.imageUrl
                               ? <img
-                                  src={s.imageUrl}
-                                  alt={s.name}
-                                  className="tbl-avatar clickable-avatar"
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    setViewImage({ url: s.imageUrl, name: s.name });
-                                  }}
-                                />
+                                src={s.imageUrl}
+                                alt={s.name}
+                                className="tbl-avatar clickable-avatar"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  setViewImage({ url: s.imageUrl, name: s.name });
+                                }}
+                              />
                               : <div className="tbl-avatar-placeholder">{s.name.charAt(0).toUpperCase()}</div>
                             }
                             <span className="tbl-name">{s.name}</span>
@@ -369,10 +386,10 @@ export default function Dashboard({ token, onLogout }) {
                   {posterPreview
                     ? <img src={posterPreview} alt="preview" style={{ maxHeight: 160, borderRadius: 8 }} />
                     : <>
-                        <span className="file-icon">🖼️</span>
-                        <strong style={{ color: 'var(--primary)' }}>Chọn ảnh poster</strong>
-                        <span>PNG, JPG, WEBP · Tối đa 10MB</span>
-                      </>
+                      <span className="file-icon">🖼️</span>
+                      <strong style={{ color: 'var(--primary)' }}>Chọn ảnh poster</strong>
+                      <span>PNG, JPG, WEBP · Tối đa 10MB</span>
+                    </>
                   }
                   <input id="poster-file" type="file" accept="image/*" onChange={handlePosterFile} />
                 </label>
