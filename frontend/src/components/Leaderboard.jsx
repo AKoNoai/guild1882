@@ -54,18 +54,20 @@ export default function Leaderboard({ scores, loading, poster, onOpenPoster }) {
                   <td className={`rank-cell ${rankClass(i)}`}>{rankIcon(i)}</td>
                   <td>
                     <div className="user-cell">
-                      {s.imageUrl
-                        ? <img
-                            src={s.imageUrl}
-                            alt={s.name}
-                            className="avatar clickable-avatar"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              setViewImage({ url: s.imageUrl, name: s.name });
-                            }}
-                          />
-                        : <div className="avatar-placeholder">{s.name.charAt(0).toUpperCase()}</div>
-                      }
+                      <div className="avatar-wrapper">
+                        {s.imageUrl
+                          ? <img
+                              src={s.imageUrl}
+                              alt={s.name}
+                              className="avatar clickable-avatar"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setViewImage({ url: s.imageUrl, name: s.name });
+                              }}
+                            />
+                          : <div className="avatar-placeholder">{s.name.charAt(0).toUpperCase()}</div>
+                        }
+                      </div>
                       <span className="user-name">{s.name}</span>
                     </div>
                   </td>
@@ -82,19 +84,12 @@ export default function Leaderboard({ scores, loading, poster, onOpenPoster }) {
 
       {/* Top 3 Stats */}
       {scores.length >= 1 && !loading && (
-        <div style={{ marginTop: 16, display: 'flex', gap: 10, flexWrap: 'wrap' }}>
+        <div className="top-stats-container">
           {scores.slice(0, 3).map((s, i) => (
-            <div key={s._id} style={{
-              flex: '1 1 200px',
-              background: 'var(--bg-card)',
-              border: `1px solid ${i === 0 ? 'rgba(251,191,36,0.3)' : i === 1 ? 'rgba(148,163,184,0.3)' : 'rgba(205,124,63,0.3)'}`,
-              borderRadius: 'var(--radius-md)',
-              padding: '16px 20px',
-              display: 'flex',
-              alignItems: 'center',
-              gap: 12
+            <div key={s._id} className={`top-stat-card top-stat-${i}`} style={{
+              border: `1px solid ${i === 0 ? 'rgba(251,191,36,0.3)' : i === 1 ? 'rgba(148,163,184,0.3)' : 'rgba(205,124,63,0.3)'}`
             }}>
-              <span style={{ fontSize: 28 }}>{['🥇','🥈','🥉'][i]}</span>
+              <span className="top-stat-icon">{['🥇', '🥈', '🥉'][i]}</span>
               <div>
                 <div style={{ fontWeight: 700, fontSize: 15 }}>{s.name}</div>
                 <div style={{ color: 'var(--color-green)', fontWeight: 700 }}>{s.score.toLocaleString()} điểm</div>

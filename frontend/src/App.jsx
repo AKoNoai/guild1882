@@ -3,6 +3,8 @@ import { Toaster } from 'react-hot-toast'
 import ScoreForm from './components/ScoreForm'
 import Leaderboard from './components/Leaderboard'
 import PosterModal from './components/PosterModal'
+import WeatherWidget from './components/WeatherWidget'
+import ProfileWidget from './components/ProfileWidget'
 import axios from 'axios'
 
 const getApiUrl = () => {
@@ -95,6 +97,18 @@ export default function App() {
           >
             📤 Gửi Điểm
           </button>
+          <button
+            className={`tab-btn ${tab === 'weather' ? 'active' : ''}`}
+            onClick={() => setTab('weather')}
+          >
+            🌤️ Thời Tiết
+          </button>
+          <button
+            className={`tab-btn ${tab === 'profile' ? 'active' : ''}`}
+            onClick={() => setTab('profile')}
+          >
+            📋 Profile
+          </button>
         </div>
 
         {tab === 'leaderboard' && (
@@ -114,6 +128,14 @@ export default function App() {
               setTab('leaderboard')
             }}
           />
+        )}
+
+        {tab === 'weather' && (
+          <WeatherWidget />
+        )}
+
+        {tab === 'profile' && (
+          <ProfileWidget />
         )}
       </div>
 

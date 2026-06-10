@@ -14,8 +14,21 @@ const getApiUrl = () => {
 }
 const API = getApiUrl();
 
+const ICON_MAP = {
+  facebook: 'fa-brands fa-facebook',
+  youtube: 'fa-brands fa-youtube',
+  zalo: 'fa-solid fa-comment-dots',
+  android: 'fa-brands fa-android',
+  ios: 'fa-brands fa-apple',
+  link: 'fa-solid fa-link',
+  group: 'fa-solid fa-users',
+  gift: 'fa-solid fa-gift',
+  messenger: 'fa-brands fa-facebook-messenger',
+  game: 'fa-solid fa-gamepad',
+};
+
 export default function Dashboard({ token, onLogout }) {
-  const [page, setPage] = useState('scores')   // 'scores' | 'poster'
+  const [page, setPage] = useState('scores')   // 'scores' | 'poster' | 'profile'
   const [scores, setScores] = useState([])
   const [filtered, setFiltered] = useState([])
   const [search, setSearch] = useState('')
@@ -33,6 +46,15 @@ export default function Dashboard({ token, onLogout }) {
   const [posterFile, setPosterFile] = useState(null)
   const [posterPreview, setPosterPreview] = useState(null)
   const [posterLoading, setPosterLoading] = useState(false)
+
+  // Profile state
+  const [profile, setProfile] = useState(null)
+  const [profileLoading, setProfileLoading] = useState(false)
+  const [addSectionTitle, setAddSectionTitle] = useState('')
+  const [addItemModal, setAddItemModal] = useState(null)   // sectionId
+  const [editItemModal, setEditItemModal] = useState(null)  // { sectionId, item }
+  const [editSectionModal, setEditSectionModal] = useState(null) // section obj
+  const [itemForm, setItemForm] = useState({ label: '', buttonText: '', buttonUrl: '', buttonColor: 'blue', buttonIcon: 'link' })
 
   const authHeaders = { headers: { Authorization: `Bearer ${token}` } }
 
@@ -63,7 +85,104 @@ export default function Dashboard({ token, onLogout }) {
     } catch { }
   }, [])
 
-  useEffect(() => { fetchScores(); fetchPoster(); fetchSubmissionsStatus() }, [fetchScores, fetchPoster, fetchSubmissionsStatus])
+  useEffect(() => { fetchScores(); fetchPoster(); fetchSubmissionsStatus(); fetchProfile() }, [fetchScores, fetchPoster, fetchSubmissionsStatus])
+
+  /* ── Fetch profile ── */
+  const fetchProfile = async () => {
+    try {
+      setProfileLoading(true)
+      const { data } = await axios.get(`${API}/api/profile`)
+      setProfile(data)
+    } catch { }
+    finally { setProfileLoading(false) }
+  }
+
+  /* ── Profile: Add Section ── */
+  const handleAddSection = async () => {
+    if (!addSectionTitle.trim()) { toast.error('Tiêu đề không được để trống'); return }
+    try {
+      const { data } = await axios.post(`${API}/api/profile/section`, { title: addSectionTitle }, authHeaders)
+      setProfile(data)
+      setAddSectionTitle('')
+      toast.success('✅ Đã thêm section!')
+    } catch (err) {
+      if (err.response?.status === 401) return onLogout()
+      toast.error('Lỗi thêm section')
+    }
+  }
+
+  /* ── Profile: Edit Section Title ── */
+  const handleEditSection = async () => {
+    if (!editSectionModal) return
+    try {
+      const { data } = await axios.put(`${API}/api/profile/section/${editSectionModal._id}`, { title: editSectionModal.title }, authHeaders)
+      setProfile(data)
+      setEditSectionModal(null)
+      toast.success('✅ Đã cập nhật!')
+    } catch (err) {
+      if (err.response?.status === 401) return onLogout()
+      toast.error('Lỗi cập nhật section')
+    }
+  }
+
+  /* ── Profile: Delete Section ── */
+  const handleDeleteSection = async (sectionId) => {
+    if (!window.confirm('Xóa section này và tất cả item bên trong?')) return
+    try {
+      const { data } = await axios.delete(`${API}/api/profile/section/${sectionId}`, authHeaders)
+      setProfile(data)
+      toast.success('🗑️ Đã xóa section!')
+    } catch (err) {
+      if (err.response?.status === 401) return onLogout()
+      toast.error('Lỗi xóa section')
+    }
+  }
+
+  /* ── Profile: Add Item ── */
+  const handleAddItem = async () => {
+    if (!itemForm.label.trim() || !itemForm.buttonText.trim()) { toast.error('Label và Tên nút là bắt buộc'); return }
+    try {
+      const { data } = await axios.post(`${API}/api/profile/section/${addItemModal}/item`, itemForm, authHeaders)
+      setProfile(data)
+      setAddItemModal(null)
+      setItemForm({ label: '', buttonText: '', buttonUrl: '', buttonColor: 'blue', buttonIcon: 'link' })
+      toast.success('✅ Đã thêm item!')
+    } catch (err) {
+      if (err.response?.status === 401) return onLogout()
+      toast.error('Lỗi thêm item')
+    }
+  }
+
+  /* ── Profile: Edit Item ── */
+  const handleEditItem = async () => {
+    if (!editItemModal) return
+    try {
+      const { data } = await axios.put(
+        `${API}/api/profile/section/${editItemModal.sectionId}/item/${editItemModal.item._id}`,
+        itemForm, authHeaders
+      )
+      setProfile(data)
+      setEditItemModal(null)
+      setItemForm({ label: '', buttonText: '', buttonUrl: '', buttonColor: 'blue', buttonIcon: 'link' })
+      toast.success('✅ Đã cập nhật!')
+    } catch (err) {
+      if (err.response?.status === 401) return onLogout()
+      toast.error('Lỗi cập nhật item')
+    }
+  }
+
+  /* ── Profile: Delete Item ── */
+  const handleDeleteItem = async (sectionId, itemId) => {
+    if (!window.confirm('Xóa item này?')) return
+    try {
+      const { data } = await axios.delete(`${API}/api/profile/section/${sectionId}/item/${itemId}`, authHeaders)
+      setProfile(data)
+      toast.success('🗑️ Đã xóa item!')
+    } catch (err) {
+      if (err.response?.status === 401) return onLogout()
+      toast.error('Lỗi xóa item')
+    }
+  }
 
   /* ── Toggle Submissions ── */
   const toggleSubmissions = async () => {
@@ -226,6 +345,9 @@ export default function Dashboard({ token, onLogout }) {
           </button>
           <button className={`nav-item ${page === 'poster' ? 'active' : ''}`} onClick={() => { setPage('poster'); setIsMobileMenuOpen(false); }}>
             <span className="nav-icon">🎨</span> Quản lý Poster
+          </button>
+          <button className={`nav-item ${page === 'profile' ? 'active' : ''}`} onClick={() => { setPage('profile'); setIsMobileMenuOpen(false); }}>
+            <span className="nav-icon">📋</span> Quản lý Profile
           </button>
         </nav>
 
@@ -429,6 +551,100 @@ export default function Dashboard({ token, onLogout }) {
             </div>
           </>
         )}
+
+        {/* ── Profile Page ── */}
+        {page === 'profile' && (
+          <>
+            <div className="page-header">
+              <div>
+                <h1>📋 Quản lý Profile</h1>
+                <p>Thêm các section và link hiển thị trên giao diện người dùng</p>
+              </div>
+            </div>
+
+            {/* Add Section */}
+            <div className="poster-section">
+              <h3>➕ Thêm Section mới</h3>
+              <div style={{ display: 'flex', gap: 10, alignItems: 'center', flexWrap: 'wrap' }}>
+                <input
+                  className="search-input"
+                  placeholder="Tiêu đề section (ví dụ: Các Kênh Youtube)"
+                  value={addSectionTitle}
+                  onChange={e => setAddSectionTitle(e.target.value)}
+                  style={{ flex: 1, minWidth: 200 }}
+                  onKeyDown={e => e.key === 'Enter' && handleAddSection()}
+                />
+                <button className="btn btn-primary" style={{ width: 'auto', padding: '10px 24px' }} onClick={handleAddSection}>➕ Thêm</button>
+              </div>
+            </div>
+
+            {/* Sections List */}
+            {profileLoading ? (
+              <div className="tbl-empty"><span className="spinner" /></div>
+            ) : (!profile?.sections || profile.sections.length === 0) ? (
+              <div className="tbl-empty">
+                <div className="icon">📋</div>
+                <p>Chưa có section nào. Hãy thêm section đầu tiên!</p>
+              </div>
+            ) : (
+              profile.sections.map(section => (
+                <div key={section._id} className="poster-section" style={{ marginTop: 16 }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 8 }}>
+                    <h3>{section.title}</h3>
+                    <div style={{ display: 'flex', gap: 8 }}>
+                      <button className="btn btn-ghost btn-sm" onClick={() => { setAddItemModal(section._id); setItemForm({ label: '', buttonText: '', buttonUrl: '', buttonColor: 'blue', buttonIcon: 'link' }) }}>➕ Thêm Item</button>
+                      <button className="btn btn-ghost btn-sm" onClick={() => setEditSectionModal({ ...section })}>✏️ Sửa</button>
+                      <button className="btn btn-danger btn-sm" onClick={() => handleDeleteSection(section._id)}>🗑️ Xóa</button>
+                    </div>
+                  </div>
+
+                  {section.items.length === 0 ? (
+                    <p style={{ color: 'var(--muted)', fontSize: 13, marginTop: 10 }}>Chưa có item nào trong section này.</p>
+                  ) : (
+                    <div className="table-wrapper" style={{ marginTop: 12 }}>
+                      <table className="admin-table">
+                        <thead>
+                          <tr>
+                            <th>Label</th>
+                            <th>Tên nút</th>
+                            <th>URL</th>
+                            <th>Màu</th>
+                            <th>Icon</th>
+                            <th>Hành động</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {section.items.map(item => (
+                            <tr key={item._id}>
+                              <td>{item.label}</td>
+                              <td><span className="score-pill">{item.buttonText}</span></td>
+                              <td style={{ maxWidth: 200, overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                                <a href={item.buttonUrl} target="_blank" rel="noopener noreferrer" style={{ color: 'var(--primary)', fontSize: 12 }}>{item.buttonUrl || '-'}</a>
+                              </td>
+                              <td><span className="score-pill" style={{ background: `var(--${item.buttonColor === 'blue' ? 'primary' : item.buttonColor === 'red' ? 'danger' : item.buttonColor})` }}>{item.buttonColor}</span></td>
+                              <td>
+                                {item.buttonIcon ? <><i className={ICON_MAP[item.buttonIcon] || 'fa-solid fa-link'} style={{ marginRight: 6 }}></i> {item.buttonIcon}</> : '-'}
+                              </td>
+                              <td>
+                                <div className="actions-cell">
+                                  <button className="btn btn-ghost btn-sm" onClick={() => {
+                                    setEditItemModal({ sectionId: section._id, item })
+                                    setItemForm({ label: item.label, buttonText: item.buttonText, buttonUrl: item.buttonUrl, buttonColor: item.buttonColor, buttonIcon: item.buttonIcon })
+                                  }}>✏️ Sửa</button>
+                                  <button className="btn btn-danger btn-sm" onClick={() => handleDeleteItem(section._id, item._id)}>🗑️ Xóa</button>
+                                </div>
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  )}
+                </div>
+              ))
+            )}
+          </>
+        )}
       </main>
 
       {/* ── Edit Modal ── */}
@@ -494,6 +710,107 @@ export default function Dashboard({ token, onLogout }) {
             </div>
             <div className="image-viewer-body">
               <img src={viewImage.url} alt={viewImage.name} className="viewer-img" />
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ── Profile: Edit Section Modal ── */}
+      {editSectionModal && (
+        <div className="modal-overlay" onClick={() => setEditSectionModal(null)}>
+          <div className="modal-box" onClick={e => e.stopPropagation()}>
+            <div className="modal-title">✏️ Sửa Section</div>
+            <div className="form-group">
+              <label>Tiêu đề</label>
+              <input
+                value={editSectionModal.title}
+                onChange={e => setEditSectionModal({ ...editSectionModal, title: e.target.value })}
+              />
+            </div>
+            <div className="modal-actions">
+              <button className="btn btn-ghost" onClick={() => setEditSectionModal(null)}>Hủy</button>
+              <button className="btn btn-primary" onClick={handleEditSection}>💾 Lưu</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ── Profile: Add/Edit Item Modal ── */}
+      {(addItemModal || editItemModal) && (
+        <div className="modal-overlay" onClick={() => { setAddItemModal(null); setEditItemModal(null); }}>
+          <div className="modal-box" onClick={e => e.stopPropagation()} style={{ minWidth: 400 }}>
+            <div className="modal-title">{editItemModal ? '✏️ Sửa Item' : '➕ Thêm Item'}</div>
+            
+            <div className="form-group">
+              <label>Label phụ (VD: Fanpage, Zalo Business)</label>
+              <input
+                value={itemForm.label}
+                onChange={e => setItemForm({ ...itemForm, label: e.target.value })}
+                placeholder="Ví dụ: Fanpage Poke"
+              />
+            </div>
+
+            <div className="form-group">
+              <label>Tên Nút (Text hiển thị trên nút)</label>
+              <input
+                value={itemForm.buttonText}
+                onChange={e => setItemForm({ ...itemForm, buttonText: e.target.value })}
+                placeholder="Ví dụ: Thangtinshop"
+              />
+            </div>
+
+            <div className="form-group">
+              <label>Đường dẫn URL (Link khi bấm vào)</label>
+              <input
+                value={itemForm.buttonUrl}
+                onChange={e => setItemForm({ ...itemForm, buttonUrl: e.target.value })}
+                placeholder="https://..."
+              />
+            </div>
+
+            <div style={{ display: 'flex', gap: 16 }}>
+              <div className="form-group" style={{ flex: 1 }}>
+                <label>Màu sắc Nút</label>
+                <select
+                  value={itemForm.buttonColor}
+                  onChange={e => setItemForm({ ...itemForm, buttonColor: e.target.value })}
+                  style={{ width: '100%', padding: '10px', borderRadius: '6px', background: 'var(--bg-secondary)', color: 'var(--text)', border: '1px solid var(--border)' }}
+                >
+                  <option value="blue">Xanh dương (Blue)</option>
+                  <option value="red">Đỏ (Red)</option>
+                  <option value="green">Xanh lá (Green)</option>
+                  <option value="yellow">Vàng (Yellow)</option>
+                  <option value="purple">Tím (Purple)</option>
+                  <option value="gray">Xám (Gray)</option>
+                </select>
+              </div>
+
+              <div className="form-group" style={{ flex: 1 }}>
+                <label>Icon</label>
+                <select
+                  value={itemForm.buttonIcon}
+                  onChange={e => setItemForm({ ...itemForm, buttonIcon: e.target.value })}
+                  style={{ width: '100%', padding: '10px', borderRadius: '6px', background: 'var(--bg-secondary)', color: 'var(--text)', border: '1px solid var(--border)' }}
+                >
+                  <option value="link">🔗 Link</option>
+                  <option value="facebook">📘 Facebook</option>
+                  <option value="youtube">▶️ Youtube</option>
+                  <option value="zalo">💬 Zalo</option>
+                  <option value="messenger">💭 Messenger</option>
+                  <option value="group">👥 Group</option>
+                  <option value="gift">🎁 Quà tặng</option>
+                  <option value="android">🤖 Android</option>
+                  <option value="ios">🍎 iOS</option>
+                  <option value="game">🎮 Game</option>
+                </select>
+              </div>
+            </div>
+
+            <div className="modal-actions" style={{ marginTop: 24 }}>
+              <button className="btn btn-ghost" onClick={() => { setAddItemModal(null); setEditItemModal(null); }}>Hủy</button>
+              <button className="btn btn-primary" onClick={editItemModal ? handleEditItem : handleAddItem}>
+                {editItemModal ? '💾 Lưu' : '➕ Thêm'}
+              </button>
             </div>
           </div>
         </div>

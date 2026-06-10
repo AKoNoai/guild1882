@@ -35,6 +35,8 @@ app.use(express.urlencoded({ extended: true }));
 app.use('/api/scores', require('./routes/scores'));
 app.use('/api/poster', require('./routes/poster'));
 app.use('/api/admin', require('./routes/admin'));
+app.use('/api/weather', require('./routes/weather'));
+app.use('/api/profile', require('./routes/profile'));
 
 // Health check
 app.get('/', (req, res) => {
