@@ -446,6 +446,9 @@ body {
   overflow: hidden;
 }
 
+/* Mobile card list hidden by default (desktop) */
+.insurance-card-list { display: none; }
+
 .admin-table {
   width: 100%;
   border-collapse: collapse;
@@ -983,4 +986,69 @@ body {
   }
 
   .admin-main { margin-left: 0; padding: 16px; max-width: 100vw; }
+
+  /* ─── Insurance table → card layout on mobile ─── */
+  .table-wrapper { border-radius: var(--radius); overflow: visible; background: transparent; border: none; }
+
+  .admin-table { display: none; }   /* ẩn table trên mobile */
+
+  /* Card list hiện thay table */
+  .insurance-card-list { display: flex; flex-direction: column; gap: 12px; }
+
+  .ins-mobile-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    transition: border-color 0.2s;
+  }
+  .ins-mobile-card:hover { border-color: rgba(99,102,241,0.3); }
+
+  .ins-mobile-top {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .ins-mobile-avatar {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid var(--border);
+    flex-shrink: 0;
+  }
+
+  .ins-mobile-avatar-placeholder {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--primary), #818cf8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 20px;
+    flex-shrink: 0;
+  }
+
+  .ins-mobile-info { flex: 1; min-width: 0; }
+  .ins-mobile-name { font-weight: 700; font-size: 15px; margin-bottom: 4px; }
+  .ins-mobile-badges { display: flex; flex-wrap: wrap; gap: 6px; }
+
+  .ins-mobile-rows { display: flex; flex-direction: column; gap: 6px; font-size: 13px; }
+  .ins-mobile-row { display: flex; align-items: center; gap: 8px; }
+  .ins-mobile-label { color: var(--muted); font-weight: 600; min-width: 60px; font-size: 12px; }
+  .ins-mobile-value { flex: 1; word-break: break-all; }
+
+  .ins-mobile-actions {
+    display: flex;
+    gap: 8px;
+    padding-top: 4px;
+    border-top: 1px solid var(--border);
+  }
+  .ins-mobile-actions .btn { flex: 1; justify-content: center; }
 }

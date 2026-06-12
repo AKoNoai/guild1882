@@ -147,49 +147,93 @@ export default function InsuranceAdminPanel({ token, onLogout }) {
             <p>Chưa có admin bảo hiểm nào.</p>
           </div>
         ) : (
-          <table className="admin-table">
-            <thead>
-              <tr>
-                <th>Avatar</th>
-                <th>Tên</th>
-                <th>Level</th>
-                <th>Chức danh</th>
-                <th>Zalo</th>
-                <th>Mua Bán</th>
-                <th>Hành động</th>
-              </tr>
-            </thead>
-            <tbody>
-              {admins.map((admin) => (
-                <tr key={admin._id}>
-                  <td>
-                    {admin.avatarUrl ? (
-                      <img src={admin.avatarUrl} alt="avatar" style={{ width: 40, height: 40, borderRadius: '50%', objectFit: 'cover' }} />
-                    ) : (
-                      <div className="tbl-avatar-placeholder">{admin.name.charAt(0)}</div>
-                    )}
-                  </td>
-                  <td><strong>{admin.name}</strong></td>
-                  <td>
-                    <span className="score-pill" style={{ background: LEVEL_COLORS[admin.level || 1], color: 'white' }}>
-                      Lv.{admin.level || 1} {LEVEL_LABELS[admin.level || 1]}
-                    </span>
-                  </td>
-                  <td><span className="score-pill" style={{ background: 'var(--primary)' }}>{admin.title}</span></td>
-                  <td>{admin.zalo}</td>
-                  <td><span className="score-pill" style={{ background: 'var(--success)', color: 'white' }}>{admin.tradeTag}</span></td>
-                  <td>
-                    <div className="actions-cell">
-                      <button className="btn btn-ghost btn-sm" onClick={() => handleOpenModal(admin)}>✏️ Sửa</button>
-                      <button className="btn btn-danger btn-sm" onClick={() => handleDelete(admin._id)}>🗑️ Xóa</button>
-                    </div>
-                  </td>
+          <>
+            {/* ── Desktop Table ── */}
+            <table className="admin-table">
+              <thead>
+                <tr>
+                  <th>Avatar</th>
+                  <th>Tên</th>
+                  <th>Level</th>
+                  <th>Chức danh</th>
+                  <th>Zalo</th>
+                  <th>Mua Bán</th>
+                  <th>Hành động</th>
                 </tr>
+              </thead>
+              <tbody>
+                {admins.map((admin) => (
+                  <tr key={admin._id}>
+                    <td>
+                      {admin.avatarUrl ? (
+                        <img src={admin.avatarUrl} alt="avatar" style={{ width: 40, height: 40, borderRadius: '50%', objectFit: 'cover' }} />
+                      ) : (
+                        <div className="tbl-avatar-placeholder">{admin.name.charAt(0)}</div>
+                      )}
+                    </td>
+                    <td><strong>{admin.name}</strong></td>
+                    <td>
+                      <span className="score-pill" style={{ background: LEVEL_COLORS[admin.level || 1], color: 'white' }}>
+                        Lv.{admin.level || 1} {LEVEL_LABELS[admin.level || 1]}
+                      </span>
+                    </td>
+                    <td><span className="score-pill" style={{ background: 'var(--primary)' }}>{admin.title}</span></td>
+                    <td>{admin.zalo}</td>
+                    <td><span className="score-pill" style={{ background: '#17a2b8', color: 'white' }}>{admin.tradeTag}</span></td>
+                    <td>
+                      <div className="actions-cell">
+                        <button className="btn btn-ghost btn-sm" onClick={() => handleOpenModal(admin)}>✏️ Sửa</button>
+                        <button className="btn btn-danger btn-sm" onClick={() => handleDelete(admin._id)}>🗑️ Xóa</button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+
+            {/* ── Mobile Card List ── */}
+            <div className="insurance-card-list">
+              {admins.map((admin) => (
+                <div key={admin._id} className="ins-mobile-card">
+                  <div className="ins-mobile-top">
+                    {admin.avatarUrl ? (
+                      <img src={admin.avatarUrl} alt="avatar" className="ins-mobile-avatar" />
+                    ) : (
+                      <div className="ins-mobile-avatar-placeholder">{admin.name.charAt(0)}</div>
+                    )}
+                    <div className="ins-mobile-info">
+                      <div className="ins-mobile-name">{admin.name}</div>
+                      <div className="ins-mobile-badges">
+                        <span className="score-pill" style={{ background: LEVEL_COLORS[admin.level || 1], color: 'white', fontSize: 11 }}>
+                          Lv.{admin.level || 1} {LEVEL_LABELS[admin.level || 1]}
+                        </span>
+                        <span className="score-pill" style={{ background: 'var(--primary)', fontSize: 11 }}>{admin.title}</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="ins-mobile-rows">
+                    <div className="ins-mobile-row">
+                      <span className="ins-mobile-label">📞 Zalo</span>
+                      <span className="ins-mobile-value">{admin.zalo}</span>
+                    </div>
+                    <div className="ins-mobile-row">
+                      <span className="ins-mobile-label">🛒 Mua bán</span>
+                      <span className="ins-mobile-value">
+                        <span className="score-pill" style={{ background: '#17a2b8', color: 'white', fontSize: 11 }}>{admin.tradeTag}</span>
+                      </span>
+                    </div>
+                  </div>
+                  <div className="ins-mobile-actions">
+                    <button className="btn btn-ghost btn-sm" onClick={() => handleOpenModal(admin)}>✏️ Sửa</button>
+                    <button className="btn btn-danger btn-sm" onClick={() => handleDelete(admin._id)}>🗑️ Xóa</button>
+                  </div>
+                </div>
               ))}
-            </tbody>
-          </table>
+            </div>
+          </>
         )}
       </div>
+
 
       {modalOpen && (
         <div className="modal-overlay" onClick={() => !isSubmitting && setModalOpen(false)}>
