@@ -6,11 +6,21 @@ import Dashboard from './pages/Dashboard'
 export default function App() {
   const [token, setToken] = useState(() => localStorage.getItem('adminToken') || '')
   const [theme, setTheme] = useState(() => localStorage.getItem('adminTheme') || 'dark')
+  const [initialLoading, setInitialLoading] = useState(true)
+  const [fadeOut, setFadeOut] = useState(false)
 
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme)
     localStorage.setItem('adminTheme', theme)
   }, [theme])
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setFadeOut(true)
+      setTimeout(() => setInitialLoading(false), 500)
+    }, 1000)
+    return () => clearTimeout(timer)
+  }, [])
 
   const handleLogin = (t) => {
     localStorage.setItem('adminToken', t)
@@ -24,6 +34,12 @@ export default function App() {
 
   return (
     <>
+      {initialLoading && (
+        <div className={`global-loading-screen ${fadeOut ? 'fade-out' : ''}`}>
+          <img src="/pikachuchay.gif" alt="Loading..." className="loading-gif" onError={(e) => { e.target.style.display='none' }} />
+          <div className="loading-text">Đang tải dữ liệu...</div>
+        </div>
+      )}
       <Toaster
         position="top-right"
         toastOptions={{

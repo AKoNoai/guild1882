@@ -67,6 +67,46 @@ body {
   border-radius: 99px;
 }
 
+/* ─── GLOBAL LOADING SCREEN ─── */
+.global-loading-screen {
+  position: fixed;
+  inset: 0;
+  background: var(--bg);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  transition: opacity 0.5s ease, visibility 0.5s ease;
+}
+
+.global-loading-screen.fade-out {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.loading-gif {
+  width: 120px;
+  height: 120px;
+  object-fit: contain;
+  margin-bottom: -10px;
+  filter: drop-shadow(0 0 10px rgba(99, 102, 241, 0.5));
+}
+
+.loading-text {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: 1px;
+  animation: pulseText 1.5s infinite;
+}
+
+@keyframes pulseText {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
 /* ─── LOGIN ─── */
 .login-page {
   min-height: 100vh;
@@ -447,7 +487,9 @@ body {
 }
 
 /* Mobile card list hidden by default (desktop) */
-.insurance-card-list { display: none; }
+.insurance-card-list {
+  display: none;
+}
 
 .admin-table {
   width: 100%;
@@ -936,13 +978,20 @@ body {
 }
 
 /* ─── MOBILE HEADER (Hidden on Desktop) ─── */
-.mobile-header { display: none; }
-.sidebar-overlay { display: none; }
+.mobile-header {
+  display: none;
+}
+
+.sidebar-overlay {
+  display: none;
+}
 
 /* ─── RESPONSIVE ─── */
 @media (max-width: 768px) {
-  .admin-layout { flex-direction: column; }
-  
+  .admin-layout {
+    flex-direction: column;
+  }
+
   .mobile-header {
     display: flex;
     align-items: center;
@@ -954,9 +1003,23 @@ body {
     top: 0;
     z-index: 90;
   }
-  .mobile-brand { display: flex; align-items: center; gap: 8px; }
-  .mobile-brand h2 { font-size: 18px; font-weight: 800; color: var(--text); }
-  .mobile-brand .brand-icon { font-size: 20px; }
+
+  .mobile-brand {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .mobile-brand h2 {
+    font-size: 18px;
+    font-weight: 800;
+    color: var(--text);
+  }
+
+  .mobile-brand .brand-icon {
+    font-size: 20px;
+  }
+
   .hamburger-btn {
     background: none;
     border: none;
@@ -969,8 +1032,9 @@ body {
   .sidebar {
     transform: translateX(-100%);
     transition: transform 0.3s ease;
-    box-shadow: 10px 0 30px rgba(0,0,0,0.5);
+    box-shadow: 10px 0 30px rgba(0, 0, 0, 0.5);
   }
+
   .sidebar.open {
     transform: translateX(0);
   }
@@ -979,21 +1043,38 @@ body {
     display: block;
     position: fixed;
     inset: 0;
-    background: rgba(0,0,0,0.6);
+    background: rgba(0, 0, 0, 0.6);
     backdrop-filter: blur(4px);
     z-index: 95;
     animation: fadeIn 0.3s ease;
   }
 
-  .admin-main { margin-left: 0; padding: 16px; max-width: 100vw; }
+  .admin-main {
+    margin-left: 0;
+    padding: 16px;
+    max-width: 100vw;
+  }
 
   /* ─── Insurance table → card layout on mobile ─── */
-  .table-wrapper { border-radius: var(--radius); overflow: visible; background: transparent; border: none; }
+  .table-wrapper {
+    border-radius: var(--radius);
+    overflow: visible;
+    background: transparent;
+    border: none;
+  }
 
-  .admin-table { display: none; }   /* ẩn table trên mobile */
+  .admin-table {
+    display: none;
+  }
+
+  /* ẩn table trên mobile */
 
   /* Card list hiện thay table */
-  .insurance-card-list { display: flex; flex-direction: column; gap: 12px; }
+  .insurance-card-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
 
   .ins-mobile-card {
     background: var(--bg-card);
@@ -1005,7 +1086,10 @@ body {
     gap: 10px;
     transition: border-color 0.2s;
   }
-  .ins-mobile-card:hover { border-color: rgba(99,102,241,0.3); }
+
+  .ins-mobile-card:hover {
+    border-color: rgba(99, 102, 241, 0.3);
+  }
 
   .ins-mobile-top {
     display: flex;
@@ -1035,14 +1119,47 @@ body {
     flex-shrink: 0;
   }
 
-  .ins-mobile-info { flex: 1; min-width: 0; }
-  .ins-mobile-name { font-weight: 700; font-size: 15px; margin-bottom: 4px; }
-  .ins-mobile-badges { display: flex; flex-wrap: wrap; gap: 6px; }
+  .ins-mobile-info {
+    flex: 1;
+    min-width: 0;
+  }
 
-  .ins-mobile-rows { display: flex; flex-direction: column; gap: 6px; font-size: 13px; }
-  .ins-mobile-row { display: flex; align-items: center; gap: 8px; }
-  .ins-mobile-label { color: var(--muted); font-weight: 600; min-width: 60px; font-size: 12px; }
-  .ins-mobile-value { flex: 1; word-break: break-all; }
+  .ins-mobile-name {
+    font-weight: 700;
+    font-size: 15px;
+    margin-bottom: 4px;
+  }
+
+  .ins-mobile-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .ins-mobile-rows {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    font-size: 13px;
+  }
+
+  .ins-mobile-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .ins-mobile-label {
+    color: var(--muted);
+    font-weight: 600;
+    min-width: 60px;
+    font-size: 12px;
+  }
+
+  .ins-mobile-value {
+    flex: 1;
+    word-break: break-all;
+  }
 
   .ins-mobile-actions {
     display: flex;
@@ -1050,5 +1167,9 @@ body {
     padding-top: 4px;
     border-top: 1px solid var(--border);
   }
-  .ins-mobile-actions .btn { flex: 1; justify-content: center; }
+
+  .ins-mobile-actions .btn {
+    flex: 1;
+    justify-content: center;
+  }
 }
