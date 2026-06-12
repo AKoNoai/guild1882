@@ -22,7 +22,6 @@ const API = getApiUrl();
 
 export default function App() {
   const [tab, setTab] = useState(() => localStorage.getItem('activeTab') || 'leaderboard')
-  const [menuOpen, setMenuOpen] = useState(false)
   const [scores, setScores] = useState([])
   const [loading, setLoading] = useState(true)
   const [posterOpen, setPosterOpen] = useState(false)
@@ -112,40 +111,35 @@ export default function App() {
               {theme === 'dark' ? <><i className="fa-solid fa-sun"></i> Sáng</> : <><i className="fa-solid fa-moon"></i> Tối</>}
             </button>
           </div>
-          <button
-            className="mobile-menu-btn"
-            onClick={() => setMenuOpen(!menuOpen)}
-          >
-            {menuOpen ? '✖ Đóng Menu' : '☰ Menu Điều Hướng'}
-          </button>
-          <div className={`tabs ${menuOpen ? 'open' : ''}`}>
+          {/* Desktop tabs - hidden on mobile */}
+          <div className="tabs desktop-tabs">
             <button
               className={`tab-btn ${tab === 'leaderboard' ? 'active' : ''}`}
-              onClick={() => { setTab('leaderboard'); setMenuOpen(false); }}
+              onClick={() => setTab('leaderboard')}
             >
               🏆 Bảng Xếp Hạng
             </button>
             <button
               className={`tab-btn ${tab === 'submit' ? 'active' : ''}`}
-              onClick={() => { setTab('submit'); setMenuOpen(false); }}
+              onClick={() => setTab('submit')}
             >
               📤 Gửi Điểm
             </button>
             <button
               className={`tab-btn ${tab === 'weather' ? 'active' : ''}`}
-              onClick={() => { setTab('weather'); setMenuOpen(false); }}
+              onClick={() => setTab('weather')}
             >
               🌤️ Thời Tiết
             </button>
             <button
               className={`tab-btn ${tab === 'profile' ? 'active' : ''}`}
-              onClick={() => { setTab('profile'); setMenuOpen(false); }}
+              onClick={() => setTab('profile')}
             >
               📋 Profile
             </button>
             <button
               className={`tab-btn ${tab === 'insurance' ? 'active' : ''}`}
-              onClick={() => { setTab('insurance'); setMenuOpen(false); }}
+              onClick={() => setTab('insurance')}
             >
               🛡️ Bảo hiểm GD
             </button>
@@ -154,7 +148,7 @@ export default function App() {
       </div>
 
 
-      <div className="container">
+      <div className="container main-content-area">
 
 
         {tab === 'leaderboard' && (
@@ -188,6 +182,45 @@ export default function App() {
           <InsuranceWidget />
         )}
       </div>
+
+      {/* Mobile Bottom Navigation Bar */}
+      <nav className="mobile-bottom-nav">
+        <button
+          className={`bottom-nav-item ${tab === 'leaderboard' ? 'active' : ''}`}
+          onClick={() => setTab('leaderboard')}
+        >
+          <i className="fa-solid fa-trophy"></i>
+          <span>XẾP HẠNG</span>
+        </button>
+        <button
+          className={`bottom-nav-item ${tab === 'submit' ? 'active' : ''}`}
+          onClick={() => setTab('submit')}
+        >
+          <i className="fa-solid fa-paper-plane"></i>
+          <span>GỬI ĐIỂM</span>
+        </button>
+        <button
+          className={`bottom-nav-item ${tab === 'weather' ? 'active' : ''}`}
+          onClick={() => setTab('weather')}
+        >
+          <i className="fa-solid fa-cloud-sun"></i>
+          <span>THỜI TIẾT</span>
+        </button>
+        <button
+          className={`bottom-nav-item ${tab === 'profile' ? 'active' : ''}`}
+          onClick={() => setTab('profile')}
+        >
+          <i className="fa-solid fa-id-card"></i>
+          <span>PROFILE</span>
+        </button>
+        <button
+          className={`bottom-nav-item ${tab === 'insurance' ? 'active' : ''}`}
+          onClick={() => setTab('insurance')}
+        >
+          <i className="fa-solid fa-shield-halved"></i>
+          <span>BẢO HIỂM</span>
+        </button>
+      </nav>
 
       <PosterModal
         open={posterOpen}

@@ -840,6 +840,11 @@ body {
   font-size: 15px;
 }
 
+/* ─── Mobile Bottom Navigation Bar ─── */
+.mobile-bottom-nav {
+  display: none;
+}
+
 /* ─── Responsive ─── */
 @media (max-width: 600px) {
   .card {
@@ -856,61 +861,93 @@ body {
     align-items: flex-start;
   }
 
+  /* Hide desktop tabs on mobile */
+  .desktop-tabs {
+    display: none !important;
+  }
+
   .mobile-menu-btn {
+    display: none;
+  }
+
+  /* Add bottom padding so content isn't hidden behind bottom nav */
+  .main-content-area {
+    padding-bottom: 80px;
+  }
+
+  /* ─── Bottom Navigation Bar ─── */
+  .mobile-bottom-nav {
     display: flex;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    background: #ffffff;
+    border-top: 1px solid #e5e7eb;
+    padding: 6px 0 env(safe-area-inset-bottom, 6px);
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.08);
+    justify-content: space-around;
+    align-items: center;
+  }
+
+  .bottom-nav-item {
+    display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
-    width: 100%;
-    padding: 12px;
-    background: var(--bg-card);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-md);
-    color: var(--color-text);
-    font-size: 16px;
-    font-weight: 700;
-    cursor: pointer;
-    margin: 20px 0;
-    transition: all 0.2s;
-  }
-
-  .mobile-menu-btn:hover {
-    border-color: var(--color-primary);
-  }
-
-  .tabs-container {
-    position: relative;
-    z-index: 50;
-  }
-
-  .tabs {
-    display: none;
-    flex-direction: column;
-    position: absolute;
-    top: calc(100% - 10px);
-    left: 0;
-    width: 100%;
-    background: var(--bg-secondary);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-md);
-    padding: 10px;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
-  }
-
-  .tabs.open {
-    display: flex;
-  }
-
-  .tab-btn {
-    width: 100%;
-    text-align: left;
+    gap: 2px;
+    flex: 1;
+    padding: 6px 0;
+    background: none;
     border: none;
-    background: transparent;
+    cursor: pointer;
+    color: #6b7280;
+    font-family: var(--font);
+    transition: color 0.2s ease;
+    -webkit-tap-highlight-color: transparent;
+    position: relative;
   }
 
-  .tab-btn.active {
-    background: rgba(99, 102, 241, 0.2);
-    box-shadow: none;
+  .bottom-nav-item i {
+    font-size: 20px;
+    line-height: 1;
+    transition: transform 0.2s ease, color 0.2s ease;
   }
+
+  .bottom-nav-item span {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+    line-height: 1.2;
+    white-space: nowrap;
+  }
+
+  .bottom-nav-item.active {
+    color: #111827;
+  }
+
+  .bottom-nav-item.active i {
+    transform: scale(1.1);
+  }
+
+  .bottom-nav-item:active {
+    opacity: 0.7;
+  }
+}
+
+/* Light theme bottom nav adjustments */
+[data-theme='light'] .mobile-bottom-nav {
+  background: #ffffff;
+  border-top-color: #e5e7eb;
+}
+
+[data-theme='light'] .bottom-nav-item {
+  color: #9ca3af;
+}
+
+[data-theme='light'] .bottom-nav-item.active {
+  color: #111827;
 }
 
 /* ─── Clickable Avatar & Image Viewer Modal ─── */
@@ -1858,18 +1895,7 @@ body {
   animation: ringRotate 3s linear infinite;
 }
 
-/* Ribbons — gắn vào wrapper (không xoay theo ring) */
-.insurance-avatar-wrapper.level-6::after {
-  content: '🎀 🌟 🎀';
-  position: absolute;
-  bottom: -20px;
-  left: 50%;
-  transform: translateX(-50%);
-  font-size: 12px;
-  white-space: nowrap;
-  z-index: 6;
-  pointer-events: none;
-}
+/* Ribbons removed */
 
 .insurance-avatar-wrapper.level-6 .level-badge {
   background: linear-gradient(90deg, #6d28d9, #3b82f6, #a78bfa, #6d28d9);
@@ -1914,7 +1940,7 @@ body {
 
 .insurance-content {
   padding: 20px;
-  padding-top: 30px;
+  padding-top: 60px;
   position: relative;
   background: #eef2f5;
   flex: 1;
@@ -1924,18 +1950,20 @@ body {
 
 .insurance-row {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   margin-bottom: 12px;
   font-size: 14px;
 }
 
 .insurance-label {
-  width: 110px;
+  width: 100px;
   color: #333;
   font-weight: 600;
   display: flex;
   align-items: center;
   gap: 6px;
+  padding-top: 4px;
+  flex-shrink: 0;
 }
 
 .insurance-value {
@@ -1945,11 +1973,13 @@ body {
 .insurance-badge {
   background-color: #007bff;
   color: white;
-  padding: 4px 12px;
+  padding: 6px 12px;
   border-radius: 20px;
   font-size: 13px;
   font-weight: 600;
   display: inline-block;
+  line-height: 1.4;
+  word-break: break-word;
 }
 
 .insurance-tag {
@@ -2042,5 +2072,28 @@ body {
   100% {
     filter: drop-shadow(0 0 2px rgba(38, 166, 154, 0.4));
     transform: scale(1);
+  }
+}
+
+/* ─── Insurance Mobile Fix ─── */
+@media (max-width: 600px) {
+  .insurance-content {
+    padding-top: 50px;
+  }
+
+  .insurance-avatar-wrapper {
+    width: 80px;
+    height: 80px;
+    top: 70px;
+    right: 12px;
+  }
+
+  .insurance-row {
+    align-items: flex-start;
+  }
+
+  .insurance-badge {
+    line-height: 1.4;
+    word-break: break-word;
   }
 }
