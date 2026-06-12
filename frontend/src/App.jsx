@@ -29,6 +29,10 @@ export default function App() {
   const [poster, setPoster] = useState(null)
   const [submissionsOpen, setSubmissionsOpen] = useState(true)
   const [theme, setTheme] = useState(() => localStorage.getItem('theme') || 'dark')
+  
+  // Loading screen states
+  const [initialLoading, setInitialLoading] = useState(true)
+  const [fadeOut, setFadeOut] = useState(false)
 
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme)
@@ -57,6 +61,9 @@ export default function App() {
       console.error(e)
     } finally {
       setLoading(false)
+      // trigger fade out loading screen
+      setFadeOut(true)
+      setTimeout(() => setInitialLoading(false), 500)
     }
   }
 
@@ -83,6 +90,13 @@ export default function App() {
 
   return (
     <div className="app">
+      {initialLoading && (
+        <div className={`global-loading-screen ${fadeOut ? 'fade-out' : ''}`}>
+          <img src="/pikachuchay.gif" alt="Loading..." className="loading-gif" onError={(e) => { e.target.style.display='none' }} />
+          <div className="loading-text">Đang tải dữ liệu...</div>
+        </div>
+      )}
+
       <Toaster position="top-right" toastOptions={{
         style: { background: '#1e1e3a', color: '#e2e8f0', border: '1px solid rgba(99,102,241,0.3)' }
       }} />
