@@ -28,6 +28,12 @@ export default function App() {
   const [posterOpen, setPosterOpen] = useState(false)
   const [poster, setPoster] = useState(null)
   const [submissionsOpen, setSubmissionsOpen] = useState(true)
+  const [theme, setTheme] = useState(() => localStorage.getItem('theme') || 'dark')
+
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme)
+    localStorage.setItem('theme', theme)
+  }, [theme])
 
   const fetchSubmissionsStatus = async () => {
     try {
@@ -78,7 +84,16 @@ export default function App() {
       }} />
 
       <div className="container" style={{ paddingTop: '20px' }}>
-        <div className="tabs-container">
+        <div className="tabs-container" style={{ position: 'relative' }}>
+          <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '10px' }}>
+            <button
+              onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+              className="tab-btn"
+              style={{ padding: '6px 14px', display: 'flex', alignItems: 'center', gap: '6px' }}
+            >
+              {theme === 'dark' ? <><i className="fa-solid fa-sun"></i> Sáng</> : <><i className="fa-solid fa-moon"></i> Tối</>}
+            </button>
+          </div>
           <button
             className="mobile-menu-btn"
             onClick={() => setMenuOpen(!menuOpen)}

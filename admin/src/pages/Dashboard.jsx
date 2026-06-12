@@ -28,7 +28,7 @@ const ICON_MAP = {
   game: 'fa-solid fa-gamepad',
 };
 
-export default function Dashboard({ token, onLogout }) {
+export default function Dashboard({ token, onLogout, theme, setTheme }) {
   const [page, setPage] = useState('scores')   // 'scores' | 'poster' | 'profile'
   const [scores, setScores] = useState([])
   const [filtered, setFiltered] = useState([])
@@ -356,6 +356,9 @@ export default function Dashboard({ token, onLogout }) {
         </nav>
 
         <div className="sidebar-footer">
+          <button className="logout-btn" onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')} style={{ marginBottom: '10px', color: 'var(--text)', borderColor: 'var(--border)' }}>
+            {theme === 'dark' ? <><i className="fa-solid fa-sun"></i> Giao diện Sáng</> : <><i className="fa-solid fa-moon"></i> Giao diện Tối</>}
+          </button>
           <button className="logout-btn" onClick={onLogout}>
             <span>🚪</span> Đăng xuất
           </button>

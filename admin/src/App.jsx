@@ -5,6 +5,12 @@ import Dashboard from './pages/Dashboard'
 
 export default function App() {
   const [token, setToken] = useState(() => localStorage.getItem('adminToken') || '')
+  const [theme, setTheme] = useState(() => localStorage.getItem('adminTheme') || 'dark')
+
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme)
+    localStorage.setItem('adminTheme', theme)
+  }, [theme])
 
   const handleLogin = (t) => {
     localStorage.setItem('adminToken', t)
@@ -30,7 +36,7 @@ export default function App() {
         }}
       />
       {token
-        ? <Dashboard token={token} onLogout={handleLogout} />
+        ? <Dashboard token={token} onLogout={handleLogout} theme={theme} setTheme={setTheme} />
         : <Login onLogin={handleLogin} />
       }
     </>
