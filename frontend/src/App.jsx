@@ -21,7 +21,7 @@ const getApiUrl = () => {
 const API = getApiUrl();
 
 export default function App() {
-  const [tab, setTab] = useState('leaderboard')
+  const [tab, setTab] = useState(() => localStorage.getItem('activeTab') || 'leaderboard')
   const [menuOpen, setMenuOpen] = useState(false)
   const [scores, setScores] = useState([])
   const [loading, setLoading] = useState(true)
@@ -34,6 +34,10 @@ export default function App() {
     document.documentElement.setAttribute('data-theme', theme)
     localStorage.setItem('theme', theme)
   }, [theme])
+
+  useEffect(() => {
+    localStorage.setItem('activeTab', tab)
+  }, [tab])
 
   const fetchSubmissionsStatus = async () => {
     try {
