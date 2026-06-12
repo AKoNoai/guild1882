@@ -38,7 +38,7 @@ export default function InsuranceWidget() {
   return (
     <div className="insurance-widget fade-in">
       <h2 className="insurance-heading">DANH SÁCH CÁC ADMIN BẢO HIỂM GD</h2>
-      
+
       <div className="insurance-grid">
         {admins.length === 0 && (
           <p style={{ textAlign: 'center', color: 'var(--muted)' }}>Chưa có Admin Bảo Hiểm GD nào.</p>
@@ -47,16 +47,18 @@ export default function InsuranceWidget() {
           <div key={admin._id} className="insurance-card">
             {/* The diagonal red/gray background */}
             <div className="insurance-banner">
-               <div className="insurance-banner-shape"></div>
+              <div className="insurance-banner-shape"></div>
             </div>
-            
+
             {/* Avatar overlapping the banner */}
-            <div className="insurance-avatar-wrapper">
+            <div className={`insurance-avatar-wrapper level-${admin.level || 1}`}>
+              <div className="frame-overlay"></div>
               {admin.avatarUrl ? (
                 <img src={admin.avatarUrl} alt={admin.name} className="insurance-avatar" />
               ) : (
                 <div className="insurance-avatar-placeholder">{admin.name.charAt(0)}</div>
               )}
+              <div className="level-badge">Lv {admin.level || 1}</div>
             </div>
 
             {/* Details */}
@@ -67,7 +69,7 @@ export default function InsuranceWidget() {
                   <span className="insurance-badge">{admin.name}</span>
                 </div>
               </div>
-              
+
               <div className="insurance-row">
                 <div className="insurance-label"><i className="fa-brands fa-facebook"></i> Facebook:</div>
                 <div className="insurance-value">

@@ -20,9 +20,9 @@ export default function InsuranceAdminPanel({ token, onLogout }) {
   const [modalOpen, setModalOpen] = useState(false)
   const [editAdmin, setEditAdmin] = useState(null)
 
-  // Form State
+  // Form State — level mặc định là 1
   const [formData, setFormData] = useState({
-    name: '', title: '', facebook: '', zalo: '', tradeTag: ''
+    name: '', title: '', facebook: '', zalo: '', tradeTag: '', level: 1
   })
   const [avatarFile, setAvatarFile] = useState(null)
   const [avatarPreview, setAvatarPreview] = useState(null)
@@ -54,13 +54,14 @@ export default function InsuranceAdminPanel({ token, onLogout }) {
         title: admin.title,
         facebook: admin.facebook,
         zalo: admin.zalo,
-        tradeTag: admin.tradeTag
+        tradeTag: admin.tradeTag,
+        level: admin.level || 1   // ← load level từ DB
       })
       setAvatarPreview(admin.avatarUrl)
       setAvatarFile(null)
     } else {
       setEditAdmin(null)
-      setFormData({ name: '', title: '', facebook: '', zalo: '', tradeTag: '' })
+      setFormData({ name: '', title: '', facebook: '', zalo: '', tradeTag: '', level: 1 }) // ← reset có level
       setAvatarPreview(null)
       setAvatarFile(null)
     }
@@ -88,6 +89,7 @@ export default function InsuranceAdminPanel({ token, onLogout }) {
     fd.append('facebook', formData.facebook)
     fd.append('zalo', formData.zalo)
     fd.append('tradeTag', formData.tradeTag)
+    fd.append('level', formData.level)  // ← gửi level lên server
     if (avatarFile) fd.append('avatar', avatarFile)
 
     setIsSubmitting(true)
@@ -121,6 +123,9 @@ export default function InsuranceAdminPanel({ token, onLogout }) {
     }
   }
 
+  const LEVEL_LABELS = ['', 'Đồng', 'Bạc', 'Bạch Kim', 'Bạch Kim+', 'Vàng', 'Kim Cương']
+  const LEVEL_COLORS = ['', '#cd7c3f', '#94a3b8', '#b0c4de', '#7ec8e3', '#f59e0b', '#a78bfa']
+
   return (
     <>
       <div className="page-header">
@@ -147,6 +152,7 @@ export default function InsuranceAdminPanel({ token, onLogout }) {
               <tr>
                 <th>Avatar</th>
                 <th>Tên</th>
+                <th>Level</th>
                 <th>Chức danh</th>
                 <th>Zalo</th>
                 <th>Mua Bán</th>
@@ -164,6 +170,11 @@ export default function InsuranceAdminPanel({ token, onLogout }) {
                     )}
                   </td>
                   <td><strong>{admin.name}</strong></td>
+                  <td>
+                    <span className="score-pill" style={{ background: LEVEL_COLORS[admin.level || 1], color: 'white' }}>
+                      Lv.{admin.level || 1} {LEVEL_LABELS[admin.level || 1]}
+                    </span>
+                  </td>
                   <td><span className="score-pill" style={{ background: 'var(--primary)' }}>{admin.title}</span></td>
                   <td>{admin.zalo}</td>
                   <td><span className="score-pill" style={{ background: 'var(--success)', color: 'white' }}>{admin.tradeTag}</span></td>
@@ -185,6 +196,7 @@ export default function InsuranceAdminPanel({ token, onLogout }) {
           <div className="modal-box" onClick={e => e.stopPropagation()} style={{ minWidth: 400 }}>
             <div className="modal-title">{editAdmin ? '✏️ Sửa Admin' : '➕ Thêm Admin'}</div>
             <form onSubmit={handleSubmit}>
+              {/* Avatar */}
               <div className="form-group" style={{ textAlign: 'center' }}>
                 <label className="file-label" style={{ display: 'inline-block', width: 'auto', padding: '10px 20px', cursor: 'pointer' }}>
                   {avatarPreview ? (
@@ -195,6 +207,22 @@ export default function InsuranceAdminPanel({ token, onLogout }) {
                   <div>Chọn Avatar</div>
                   <input type="file" accept="image/*" style={{ display: 'none' }} onChange={handleFileChange} />
                 </label>
+              </div>
+
+              {/* Level — select 1-6 */}
+              <div className="form-group">
+                <label>Level (1-6)</label>
+                <select
+                  value={formData.level}
+                  onChange={e => setFormData({ ...formData, level: parseInt(e.target.value, 10) })}
+                >
+                  <option value={1}>Lv.1 — Đồng</option>
+                  <option value={2}>Lv.2 — Bạc</option>
+                  <option value={3}>Lv.3 — Bạch Kim</option>
+                  <option value={4}>Lv.4 — Bạch Kim+</option>
+                  <option value={5}>Lv.5 — Vàng</option>
+                  <option value={6}>Lv.6 — Kim Cương (cao nhất)</option>
+                </select>
               </div>
 
               <div className="form-group">

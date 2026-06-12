@@ -493,22 +493,25 @@ body {
   position: absolute;
   width: 150%;
   height: 150%;
-  background: conic-gradient(
-    transparent 0deg,
-    transparent 80deg,
-    rgba(255,255,255,0.8) 120deg,
-    #fff 180deg,
-    rgba(255,255,255,0.8) 240deg,
-    transparent 280deg,
-    transparent 360deg
-  );
+  background: conic-gradient(transparent 0deg,
+      transparent 80deg,
+      rgba(255, 255, 255, 0.8) 120deg,
+      #fff 180deg,
+      rgba(255, 255, 255, 0.8) 240deg,
+      transparent 280deg,
+      transparent 360deg);
   animation: spinBorder 3s linear infinite;
   z-index: 0;
 }
 
 @keyframes spinBorder {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 .avatar-wrapper::after {
@@ -822,7 +825,7 @@ body {
     margin: 20px 0;
     transition: all 0.2s;
   }
-  
+
   .mobile-menu-btn:hover {
     border-color: var(--color-primary);
   }
@@ -843,7 +846,7 @@ body {
     border: 1px solid var(--border);
     border-radius: var(--radius-md);
     padding: 10px;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
   }
 
   .tabs.open {
@@ -1449,7 +1452,7 @@ body {
   border-radius: 8px;
   overflow: hidden;
   position: relative;
-  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   display: flex;
   flex-direction: column;
   border: 1px solid var(--border);
@@ -1457,14 +1460,25 @@ body {
   animation: cardFadeInUp 0.6s ease-out both;
 }
 
-.insurance-card:nth-child(1) { animation-delay: 0.1s; }
-.insurance-card:nth-child(2) { animation-delay: 0.2s; }
-.insurance-card:nth-child(3) { animation-delay: 0.3s; }
-.insurance-card:nth-child(4) { animation-delay: 0.4s; }
+.insurance-card:nth-child(1) {
+  animation-delay: 0.1s;
+}
+
+.insurance-card:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.insurance-card:nth-child(3) {
+  animation-delay: 0.3s;
+}
+
+.insurance-card:nth-child(4) {
+  animation-delay: 0.4s;
+}
 
 .insurance-card:hover {
   transform: translateY(-8px);
-  box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
   border-color: #f15858;
 }
 
@@ -1486,12 +1500,21 @@ body {
 }
 
 @keyframes shineSweep {
-  100% { left: 200%; }
+  100% {
+    left: 200%;
+  }
 }
 
 @keyframes cardFadeInUp {
-  0% { opacity: 0; transform: translateY(40px); }
-  100% { opacity: 1; transform: translateY(0); }
+  0% {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .insurance-banner {
@@ -1513,41 +1536,291 @@ body {
 
 .insurance-avatar-wrapper {
   position: absolute;
-  top: 70px;
-  right: 20px;
-  width: 90px;
-  height: 90px;
+  top: 62px;
+  right: 14px;
+  width: 96px;
+  height: 96px;
   border-radius: 50%;
-  border: 4px solid var(--bg-card);
-  background: var(--bg-card);
   z-index: 2;
-  overflow: hidden;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
   transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 .insurance-card:hover .insurance-avatar-wrapper {
-  transform: scale(1.1) rotate(-3deg);
-  border-color: #f15858;
+  transform: scale(1.08) rotate(-3deg);
 }
 
+/* The actual avatar image sits inside */
 .insurance-avatar {
-  width: 100%;
-  height: 100%;
+  position: absolute;
+  inset: 8px;
+  width: calc(100% - 16px);
+  height: calc(100% - 16px);
+  border-radius: 50%;
   object-fit: cover;
+  z-index: 2;
 }
 
 .insurance-avatar-placeholder {
-  width: 100%;
-  height: 100%;
+  position: absolute;
+  inset: 8px;
+  width: calc(100% - 16px);
+  height: calc(100% - 16px);
+  border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   background: #0056b3;
   color: #fff;
-  font-size: 32px;
+  font-size: 26px;
   font-weight: bold;
+  z-index: 2;
 }
+
+/* frame-overlay is the ring frame drawn via box-shadow / border */
+.frame-overlay {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  z-index: 3;
+  pointer-events: none;
+}
+
+/* ─── Level Badge ─── */
+.level-badge {
+  position: absolute;
+  bottom: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 11px;
+  font-weight: 800;
+  padding: 2px 9px;
+  border-radius: 12px;
+  border: 2px solid #fff;
+  z-index: 6;
+  white-space: nowrap;
+  letter-spacing: 0.5px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.35);
+}
+
+/* ════════════════════════════════════════
+   Lv 1 – ĐỒNG (Bronze)
+   Simple copper ring
+════════════════════════════════════════ */
+.insurance-avatar-wrapper.level-1 .frame-overlay {
+  border: 6px solid #b87333;
+  box-shadow:
+    0 0 0 1px #8b5c2a inset,
+    0 0 6px rgba(184,115,51,0.5);
+}
+.insurance-avatar-wrapper.level-1 .level-badge {
+  background: linear-gradient(135deg, #b87333, #d4956a);
+  color: #fff;
+}
+
+/* ════════════════════════════════════════
+   Lv 2 – BẠC (Silver)
+   Silver ring with small gem on top
+════════════════════════════════════════ */
+.insurance-avatar-wrapper.level-2 .frame-overlay {
+  border: 6px solid #c0c0c0;
+  box-shadow:
+    0 0 0 1px #8a8a8a inset,
+    0 0 8px rgba(192,192,192,0.5);
+}
+.insurance-avatar-wrapper.level-2 .frame-overlay::before {
+  content: '◆';
+  position: absolute;
+  top: -14px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 14px;
+  color: #e8e8e8;
+  text-shadow: 0 0 4px #aaa;
+  z-index: 4;
+}
+.insurance-avatar-wrapper.level-2 .level-badge {
+  background: linear-gradient(135deg, #9e9e9e, #e0e0e0);
+  color: #333;
+}
+
+/* ════════════════════════════════════════
+   Lv 3 – BẠCH KIM (Platinum / Purple)
+   Purple ring + gem + small leaf details
+════════════════════════════════════════ */
+.insurance-avatar-wrapper.level-3 .frame-overlay {
+  border: 6px solid #b0a0d0;
+  box-shadow:
+    0 0 0 1px #7a6aaa inset,
+    0 0 10px rgba(176,160,208,0.6);
+}
+.insurance-avatar-wrapper.level-3 .frame-overlay::before {
+  content: '◆';
+  position: absolute;
+  top: -15px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 15px;
+  color: #d4c5f0;
+  text-shadow: 0 0 6px #b0a0d0;
+  z-index: 4;
+}
+.insurance-avatar-wrapper.level-3 .frame-overlay::after {
+  content: '❧  ❧';
+  position: absolute;
+  bottom: -14px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 11px;
+  color: #b0a0d0;
+  white-space: nowrap;
+  z-index: 4;
+}
+.insurance-avatar-wrapper.level-3 .level-badge {
+  background: linear-gradient(135deg, #7e6aaa, #b0a0d0);
+  color: #fff;
+}
+
+/* ════════════════════════════════════════
+   Lv 4 – BẠCH KIM+ (Silver + Crown + Leaves)
+   Larger crown gem, leaf decorations
+════════════════════════════════════════ */
+.insurance-avatar-wrapper.level-4 .frame-overlay {
+  border: 7px solid #d0d8e8;
+  box-shadow:
+    0 0 0 2px #a0aec0 inset,
+    0 0 14px rgba(180,200,230,0.7),
+    0 0 4px rgba(255,255,255,0.4);
+}
+.insurance-avatar-wrapper.level-4 .frame-overlay::before {
+  content: '♛';
+  position: absolute;
+  top: -18px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 18px;
+  color: #c8d8f0;
+  text-shadow: 0 0 8px rgba(200,216,240,0.9);
+  z-index: 4;
+}
+.insurance-avatar-wrapper.level-4 .frame-overlay::after {
+  content: '🌿 🌿';
+  position: absolute;
+  bottom: -16px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 12px;
+  white-space: nowrap;
+  z-index: 4;
+}
+.insurance-avatar-wrapper.level-4 .level-badge {
+  background: linear-gradient(135deg, #94a3b8, #cbd5e1);
+  color: #1e293b;
+}
+
+/* ════════════════════════════════════════
+   Lv 5 – VÀNG (Gold + Flames)
+   Gold ring with fire/wings, orange gem, glow
+════════════════════════════════════════ */
+.insurance-avatar-wrapper.level-5 .frame-overlay {
+  border: 7px solid #f59e0b;
+  box-shadow:
+    0 0 0 2px #b45309 inset,
+    0 0 16px rgba(245,158,11,0.8),
+    0 0 30px rgba(245,158,11,0.4);
+  animation: goldPulse 2s ease-in-out infinite;
+}
+.insurance-avatar-wrapper.level-5 .frame-overlay::before {
+  content: '🔥';
+  position: absolute;
+  top: -18px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 18px;
+  z-index: 4;
+  animation: flameBob 1.2s ease-in-out infinite alternate;
+}
+.insurance-avatar-wrapper.level-5 .frame-overlay::after {
+  content: '🔥 🔥';
+  position: absolute;
+  bottom: -16px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 12px;
+  white-space: nowrap;
+  z-index: 4;
+}
+.insurance-avatar-wrapper.level-5 .level-badge {
+  background: linear-gradient(135deg, #d97706, #fbbf24);
+  color: #7c2d12;
+  border-color: #fef3c7;
+  box-shadow: 0 0 10px rgba(245,158,11,0.6);
+}
+@keyframes goldPulse {
+  0%,100% { box-shadow: 0 0 0 2px #b45309 inset, 0 0 16px rgba(245,158,11,0.8), 0 0 30px rgba(245,158,11,0.3); }
+  50%      { box-shadow: 0 0 0 2px #b45309 inset, 0 0 22px rgba(245,158,11,1.0), 0 0 45px rgba(245,158,11,0.6); }
+}
+@keyframes flameBob {
+  from { transform: translateX(-50%) scale(1); }
+  to   { transform: translateX(-50%) scale(1.2) translateY(-2px); }
+}
+
+/* ════════════════════════════════════════
+   Lv 6 – KIM CƯƠNG (Diamond / Cosmic)
+   Spinning rainbow ring — avatar visible in center
+════════════════════════════════════════ */
+.insurance-avatar-wrapper.level-6 {
+  filter: drop-shadow(0 0 12px rgba(167,139,250,0.9));
+}
+
+/* Spinning rainbow ring — dùng mask để center trong suốt, avatar hiện ra */
+.insurance-avatar-wrapper.level-6 .frame-overlay {
+  background: conic-gradient(from 0deg, #a78bfa, #60a5fa, #34d399, #fbbf24, #f472b6, #a78bfa);
+  border: 8px solid transparent;
+  /* Mask trick: chỉ hiện vùng border, center hoàn toàn trong suốt */
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  animation: ringRotate 3s linear infinite;
+}
+
+/* Ribbons — gắn vào wrapper (không xoay theo ring) */
+.insurance-avatar-wrapper.level-6::after {
+  content: '🎀 🌟 🎀';
+  position: absolute;
+  bottom: -20px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 12px;
+  white-space: nowrap;
+  z-index: 6;
+  pointer-events: none;
+}
+
+.insurance-avatar-wrapper.level-6 .level-badge {
+  background: linear-gradient(90deg, #6d28d9, #3b82f6, #a78bfa, #6d28d9);
+  background-size: 300%;
+  animation: badgeShimmer 2s linear infinite;
+  color: #fff;
+  border-color: #e9d5ff;
+  box-shadow: 0 0 12px rgba(167,139,250,0.9);
+  font-weight: 900;
+}
+
+@keyframes ringRotate {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+@keyframes gemFloat {
+  from { transform: translateX(-50%) translateY(0px); }
+  to   { transform: translateX(-50%) translateY(-5px); }
+}
+@keyframes badgeShimmer {
+  0%   { background-position: 0% 50%; }
+  100% { background-position: 300% 50%; }
+}
+
 
 .insurance-content {
   padding: 20px;
@@ -1623,7 +1896,7 @@ body {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   border: 1px solid #ddd;
   transition: all 0.2s;
 }
@@ -1666,7 +1939,18 @@ body {
 }
 
 @keyframes shieldPulse {
-  0% { filter: drop-shadow(0 0 2px rgba(38, 166, 154, 0.4)); transform: scale(1); }
-  50% { filter: drop-shadow(0 0 8px rgba(38, 166, 154, 0.8)); transform: scale(1.05); }
-  100% { filter: drop-shadow(0 0 2px rgba(38, 166, 154, 0.4)); transform: scale(1); }
+  0% {
+    filter: drop-shadow(0 0 2px rgba(38, 166, 154, 0.4));
+    transform: scale(1);
+  }
+
+  50% {
+    filter: drop-shadow(0 0 8px rgba(38, 166, 154, 0.8));
+    transform: scale(1.05);
+  }
+
+  100% {
+    filter: drop-shadow(0 0 2px rgba(38, 166, 154, 0.4));
+    transform: scale(1);
+  }
 }

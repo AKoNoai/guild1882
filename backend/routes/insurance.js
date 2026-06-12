@@ -24,7 +24,7 @@ const uploadToCloudinary = (buffer, folder) => {
 // GET /api/insurance - public
 router.get('/', async (req, res) => {
   try {
-    const admins = await InsuranceAdmin.find().sort({ createdAt: -1 });
+    const admins = await InsuranceAdmin.find().sort({ level: -1, createdAt: -1 });
     res.json(admins);
   } catch (err) {
     res.status(500).json({ message: err.message });
@@ -34,7 +34,7 @@ router.get('/', async (req, res) => {
 // POST /api/insurance - admin only
 router.post('/', auth, upload.single('avatar'), async (req, res) => {
   try {
-    const { name, title, facebook, zalo, tradeTag } = req.body;
+    const { name, title, facebook, zalo, tradeTag, level } = req.body;
     let avatarUrl = null;
     let avatarPublicId = null;
 
@@ -50,6 +50,7 @@ router.post('/', auth, upload.single('avatar'), async (req, res) => {
       facebook,
       zalo,
       tradeTag,
+      level: level ? Math.min(6, Math.max(1, parseInt(level, 10))) : 1,
       avatarUrl,
       avatarPublicId
     });
@@ -64,7 +65,7 @@ router.post('/', auth, upload.single('avatar'), async (req, res) => {
 // PUT /api/insurance/:id - admin only
 router.put('/:id', auth, upload.single('avatar'), async (req, res) => {
   try {
-    const { name, title, facebook, zalo, tradeTag } = req.body;
+    const { name, title, facebook, zalo, tradeTag, level } = req.body;
     const admin = await InsuranceAdmin.findById(req.params.id);
 
     if (!admin) return res.status(404).json({ message: 'Admin not found' });
@@ -73,9 +74,8 @@ router.put('/:id', auth, upload.single('avatar'), async (req, res) => {
     let avatarPublicId = admin.avatarPublicId;
 
     if (req.file) {
-      // Delete old avatar
       if (admin.avatarPublicId) {
-        await cloudinary.uploader.destroy(admin.avatarPublicId).catch(() => {});
+        await cloudinary.uploader.destroy(admin.avatarPublicId).catch(() => { });
       }
       const result = await uploadToCloudinary(req.file.buffer, 'guild1882/insurance');
       avatarUrl = result.secure_url;
@@ -87,6 +87,7 @@ router.put('/:id', auth, upload.single('avatar'), async (req, res) => {
     admin.facebook = facebook || admin.facebook;
     admin.zalo = zalo || admin.zalo;
     admin.tradeTag = tradeTag || admin.tradeTag;
+    admin.level = level ? Math.min(6, Math.max(1, parseInt(level, 10))) : admin.level;
     admin.avatarUrl = avatarUrl;
     admin.avatarPublicId = avatarPublicId;
 
@@ -104,7 +105,7 @@ router.delete('/:id', auth, async (req, res) => {
     if (!admin) return res.status(404).json({ message: 'Admin not found' });
 
     if (admin.avatarPublicId) {
-      await cloudinary.uploader.destroy(admin.avatarPublicId).catch(() => {});
+      await cloudinary.uploader.destroy(admin.avatarPublicId).catch(() => { });
     }
 
     await InsuranceAdmin.findByIdAndDelete(req.params.id);
