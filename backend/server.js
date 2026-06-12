@@ -72,6 +72,7 @@ app.use('/api/poster', require('./routes/poster'));
 app.use('/api/admin', require('./routes/admin'));
 app.use('/api/weather', require('./routes/weather'));
 app.use('/api/profile', require('./routes/profile'));
+app.use('/api/insurance', require('./routes/insurance'));
 
 // Health check
 app.get('/', (req, res) => {

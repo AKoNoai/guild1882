@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import axios from 'axios'
 import toast from 'react-hot-toast'
+import InsuranceAdminPanel from './InsuranceAdminPanel'
 
 const getApiUrl = () => {
   const envUrl = import.meta.env.VITE_API_URL;
@@ -349,6 +350,9 @@ export default function Dashboard({ token, onLogout }) {
           <button className={`nav-item ${page === 'profile' ? 'active' : ''}`} onClick={() => { setPage('profile'); setIsMobileMenuOpen(false); }}>
             <span className="nav-icon">📋</span> Quản lý Profile
           </button>
+          <button className={`nav-item ${page === 'insurance' ? 'active' : ''}`} onClick={() => { setPage('insurance'); setIsMobileMenuOpen(false); }}>
+            <span className="nav-icon">🛡️</span> Bảo hiểm GD
+          </button>
         </nav>
 
         <div className="sidebar-footer">
@@ -644,6 +648,10 @@ export default function Dashboard({ token, onLogout }) {
               ))
             )}
           </>
+        )}
+
+        {page === 'insurance' && (
+          <InsuranceAdminPanel token={token} onLogout={onLogout} />
         )}
       </main>
 

@@ -5,6 +5,7 @@ import Leaderboard from './components/Leaderboard'
 import PosterModal from './components/PosterModal'
 import WeatherWidget from './components/WeatherWidget'
 import ProfileWidget from './components/ProfileWidget'
+import InsuranceWidget from './components/InsuranceWidget'
 import axios from 'axios'
 
 const getApiUrl = () => {
@@ -109,17 +110,16 @@ export default function App() {
             >
               📋 Profile
             </button>
+            <button
+              className={`tab-btn ${tab === 'insurance' ? 'active' : ''}`}
+              onClick={() => { setTab('insurance'); setMenuOpen(false); }}
+            >
+              🛡️ Bảo hiểm GD
+            </button>
           </div>
         </div>
       </div>
 
-      <header className="header" style={{ borderTop: 'none', marginTop: '10px' }}>
-        <div className="container">
-          <div className="header-badge">⚔️ Guild 1882</div>
-          <h1>Bảng Xếp Hạng</h1>
-          <p>Gửi điểm của bạn và cạnh tranh với mọi người</p>
-        </div>
-      </header>
 
       <div className="container">
 
@@ -149,6 +149,10 @@ export default function App() {
 
         {tab === 'profile' && (
           <ProfileWidget />
+        )}
+
+        {tab === 'insurance' && (
+          <InsuranceWidget />
         )}
       </div>
 
