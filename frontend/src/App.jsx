@@ -79,8 +79,8 @@ export default function App() {
 
       <div className="container" style={{ paddingTop: '20px' }}>
         <div className="tabs-container">
-          <button 
-            className="mobile-menu-btn" 
+          <button
+            className="mobile-menu-btn"
             onClick={() => setMenuOpen(!menuOpen)}
           >
             {menuOpen ? '✖ Đóng Menu' : '☰ Menu Điều Hướng'}
