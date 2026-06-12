@@ -29,7 +29,7 @@ const ICON_MAP = {
 };
 
 export default function Dashboard({ token, onLogout, theme, setTheme }) {
-  const [page, setPage] = useState('scores')   // 'scores' | 'poster' | 'profile'
+  const [page, setPage] = useState(() => localStorage.getItem('adminActivePage') || 'scores')   // 'scores' | 'poster' | 'profile' | 'insurance'
   const [scores, setScores] = useState([])
   const [filtered, setFiltered] = useState([])
   const [search, setSearch] = useState('')
@@ -87,6 +87,10 @@ export default function Dashboard({ token, onLogout, theme, setTheme }) {
   }, [])
 
   useEffect(() => { fetchScores(); fetchPoster(); fetchSubmissionsStatus(); fetchProfile() }, [fetchScores, fetchPoster, fetchSubmissionsStatus])
+
+  useEffect(() => {
+    localStorage.setItem('adminActivePage', page)
+  }, [page])
 
   /* ── Fetch profile ── */
   const fetchProfile = async () => {
