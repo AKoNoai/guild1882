@@ -6,6 +6,7 @@ import PosterModal from './components/PosterModal'
 import WeatherWidget from './components/WeatherWidget'
 import ProfileWidget from './components/ProfileWidget'
 import InsuranceWidget from './components/InsuranceWidget'
+import NotificationModal from './components/NotificationModal'
 import axios from 'axios'
 
 const getApiUrl = () => {
@@ -227,6 +228,7 @@ export default function App() {
         poster={poster}
         onClose={() => setPosterOpen(false)}
       />
+      <NotificationModal />
     </div>
   )
 }

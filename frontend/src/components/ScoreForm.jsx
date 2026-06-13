@@ -15,9 +15,9 @@ const getApiUrl = () => {
 const API = getApiUrl();
 
 export default function ScoreForm({ onSuccess, submissionsOpen }) {
-  const [name, setName]       = useState('')
-  const [score, setScore]     = useState('')
-  const [image, setImage]     = useState(null)
+  const [name, setName] = useState('')
+  const [score, setScore] = useState('')
+  const [image, setImage] = useState(null)
   const [preview, setPreview] = useState(null)
   const [loading, setLoading] = useState(false)
 
@@ -83,10 +83,10 @@ export default function ScoreForm({ onSuccess, submissionsOpen }) {
               {preview
                 ? <img src={preview} alt="Preview" className="preview-img" />
                 : <>
-                    <span className="upload-icon">🖼️</span>
-                    <strong>Chọn ảnh</strong>
-                    <span>PNG, JPG, WEBP · Tối đa 5MB</span>
-                  </>
+                  <span className="upload-icon">🖼️</span>
+                  <strong>Chọn ảnh</strong>
+                  <span>PNG, JPG, WEBP · Tối đa 5MB</span>
+                </>
               }
               <input
                 id="avatar-input"
@@ -127,7 +127,7 @@ export default function ScoreForm({ onSuccess, submissionsOpen }) {
 
           <button type="submit" className="btn btn-primary" disabled={loading}>
             {loading
-              ? <><span className="spinner" style={{width:16,height:16,borderWidth:2}} /> Đang gửi...</>
+              ? <><span className="spinner" style={{ width: 16, height: 16, borderWidth: 2 }} /> Đang gửi...</>
               : '🚀 Gửi Điểm'
             }
           </button>
